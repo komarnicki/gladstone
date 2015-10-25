@@ -36,86 +36,22 @@ a[href^="https://maps.google.com/maps"] { display:none !important; }
 
 }
 
-#map_header, #map_header_overlay {
-    background-color: inherit;
-    height: 50px;
-    position: absolute;
-    width: 50%;
-    z-index: 3;
-}
-
-#map_header_overlay {
-    background-color: inherit;
-    width: 100%;
-    left: -2000px;
-    z-index: 2;
-}
-
-.map_control {
-    color: #ffffff;
-    font-size: 16px;
-    height: 50px;
-    line-height: 50px;
-    position: absolute;
-    text-align: center;
-    width: 50px;
-    z-index: 10;
-    right: 0px;
-    top: -50px;
-}
-
-.map_control:hover {
-    background-color: inherit;
-}
-
-.map_control:hover {
-    cursor: pointer;
-}
-
-ul#map_switch_continent {
-    background-color: #dfdfdf;
-    font-size: 14px;
-    list-style: outside none none;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    right: 51px;
-    top: 50px;
-    z-index: 1;
-    display: none;
-}
-
-ul#map_switch_continent li {
-    display: block;
-    line-height: 20px;
-    margin: 0;
-    padding: 5px 15px;
-    text-align: right;
-}
-
-ul#map_switch_continent li:hover {
-    background-color: #efefef;
-    cursor: pointer;
-}
-
 aside#map_controls,
 aside#map_continents_controls {
     overflow: hidden;
     position: absolute;
     right: 0;
     top: 0;
-    width: 150px;
-    z-index: 110;
+    width: auto;
+    z-index: 1000;
 }
 
 aside#map_continents_controls {
     bottom: 0;
     top: inherit;
-    width: auto;
 }
 
-aside#map_controls > nav,
-aside#map_continents_controls > nav {
+.map_controls_group > nav {
     float: left;
     font-size: 50px;
     height: 50px;
@@ -124,48 +60,41 @@ aside#map_continents_controls > nav {
     text-align: center;
     top: 0;
     width: 50px;
+    background-position: center;
 }
 
-aside#map_continents_controls > nav {
-    height: 60px;
-    width: 60px;
-}
-
-.continent_part {
-    background-repeat: no-repeat;
-    background-position: center center;
-}
-
-aside#map_continents_controls > nav span.count {
-    display: none;
-}
-
-aside#map_controls > nav.disabled,
-aside#map_controls > nav.disabled:hover {
-    color: #ff0040;
-    cursor: not-allowed;
-}
-
-aside#map_continents_controls > nav.active,
-aside#map_controls > nav:hover,
-aside#map_continents_controls > nav:hover {
+.map_controls_group > nav:hover,
+.map_controls_group > nav.active {
     color: #ff0040;
     cursor: pointer;
 }
 
+/* to implement */
+.map_controls_group > nav.disabled,
+.map_controls_group > nav.disabled:hover {
+    color: #ff0040;
+    cursor: not-allowed;
+}
+
+#map_continents_controls.map_controls_group > nav {
+    height: 70px;
+    width: 70px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 .marker {
-    position: absolute;
-    background-color: transparent !important;
-    z-index: 100;
-    opacity: 1;
     width: 200px;
     height: 18px;
+    position: absolute;
+    background-color: transparent !important;
+    z-index: 500;
 }
 
 .marker_active .marker,
 .marker:hover {
     cursor: pointer;
-    z-index: 300;
+    z-index: 501;
 }
 
 .marker:not(.active):hover .marker_pointer,
@@ -178,63 +107,54 @@ aside#map_continents_controls > nav:hover {
     cursor: default;
 }
 
-.marker.collides {
-    pointer-events: none !important;
-    cursor: default !important;
-    z-index: 99;
-}
-
-.marker.collides .marker_pointer {
-    font-size: 12px;
-    pointer-events: none !important;
-    cursor: default !important;
-    -khtml-filter: grayscale(100%) brightness(150%);
-    -moz-filter: grayscale(100%) brightness(150%);
-    -o-filter: grayscale(100%) brightness(150%);
-    -webkit-filter: grayscale(100%) brightness(150%);
-    filter: grayscale(100%) brightness(150%);
-}
-
 .marker.collides .marker_label {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    cursor: default !important;
+    display: none;
+    pointer-events: none;
+    cursor: default;
 }
 
 .marker_label {
     color: #000000;
-    position: absolute;
-    font-size: 13px;
-    font-weight: 600;
+    position: relative;
+    font-size: 14px;
     display: inline-block;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    margin: 0 5px;
-    float: left;
+    margin: 0 0 0 5px;
     width: 170px;
     height: 18px;
-    bottom: 0;
-}
-
-.marker.active .marker_label {
-    font-size: 16px;
-    line-height: 16px;
-    width: 300px;
+    line-height: 18px;
 }
 
 .marker_pointer {
     font-size: 26px;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     display: inline-block;
     line-height: 32px;
     float: left;
-    padding: 0 2px;
     position: relative;
 }
 
 .marker_pointer:hover {
     cursor: inherit;
+}
+
+.marker.collides {
+    pointer-events: none;
+    cursor: default;
+    z-index: 499;
+}
+
+.marker.collides .marker_pointer {
+    font-size: 12px;
+    pointer-events: none;
+    cursor: default;
+    -khtml-filter: grayscale(100%) brightness(150%);
+    -moz-filter: grayscale(100%) brightness(150%);
+    -o-filter: grayscale(100%) brightness(150%);
+    -webkit-filter: grayscale(100%) brightness(150%);
+    filter: grayscale(100%) brightness(150%);
 }
 
 .marker.color_red1 { border-color: #f05456; background-color: #f05456; color: #ffffff; }
