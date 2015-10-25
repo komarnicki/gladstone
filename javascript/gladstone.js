@@ -23,7 +23,7 @@ function Gladstone(selector, markers) {
                 draggableCursor: 'default'
             },
             map_limit_lat_north: 60,
-            map_limit_lat_south: -45
+            map_limit_lat_south: -52
         };
 
         this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
@@ -145,12 +145,12 @@ Gladstone.prototype.detectMarkersCollisions = function () {
 
         var run = function () {
 
-            var sensitivity = 10;
+            var sensitivity = 2;
             var markers = [];
             var markers_dom = self.args.map_markers_dom;
             var markers_dom_count = markers_dom.length;
             var width = 200 + sensitivity;
-            var height = 32 + sensitivity;
+            var height = 18 + sensitivity;
             var x1, y1;
             var s1, s2;
 
