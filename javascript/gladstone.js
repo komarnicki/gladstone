@@ -1,0 +1,227 @@
+function Gladstone(selector, markers) {
+
+    try {
+
+        this.args = {
+            map_element: document.getElementById(selector),
+            map_bounds: new google.maps.LatLngBounds(),
+            map_markers: markers,
+            map_markers_dom: null,
+            map_continent_active: null,
+            map_continent_default: 'australia',
+            map_position_current: null,
+            map_position_default: new google.maps.LatLng(-27.480515, 153.066031), // Brisbane
+            map_options: {
+                styles: [ { featureType: 'administrative', elementType: 'all', stylers: [ { visibility: 'off' } ] }, { featureType: 'landscape', elementType: 'all', stylers: [ {hue: '#FFFFFF'}, {saturation: -100}, {lightness: 100}, {visibility: 'on'} ] }, { featureType: 'poi', elementType: 'all', stylers: [ {visibility: 'off'} ] }, { featureType: 'road', elementType: 'all', stylers: [ {visibility: 'on'}, {lightness: -30} ] }, { featureType: 'road', elementType: 'labels', stylers: [ {visibility: 'off'} ] }, { featureType: 'transit', elementType: 'all', stylers: [ {visibility: 'off'} ] }, { featureType: 'water', elementType: 'all', stylers: [ {saturation: -100}, {lightness: -100} ] }, { featureType: 'landscape', elementType: 'labels.text', stylers: [ {visibility: 'off'} ] }, { featureType: 'all', elementType: 'all', stylers: [ {saturation: -100}, {lightness: 91} ] } ],
+                zoom: 5,
+                minZoom: 3,
+                maxZoom: 17,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                scrollwheel: true,
+                disableDefaultUI: true,
+                disableDoubleClickZoom: true,
+                draggableCursor: 'default'
+            },
+            map_limit_lat_north: 60,
+            map_limit_lat_south: -45
+        };
+
+        this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
+        this.map.setCenter(this.args.map_position_default);
+        this.map.setZoom(this.args.map_options.zoom);
+
+        this.setMarkers();
+
+    } catch(e) {
+        console.log('WARNING! Gladstone Exception!');
+        console.log('Message: ' + e);
+    }
+}
+
+Gladstone.prototype.setMarkers = function () {
+
+    if (this.args.map_markers.length === 0) return false;
+
+    var self = this;
+    var m = this.args.map_markers;
+    var ch = document.getElementsByClassName('continent_handler');
+    var zh = document.getElementsByClassName('zoom_handler');
+
+    var listenContinent = function () {
+
+        for (var i = 0; i < ch.length; i++) {
+            ch[i].classList.remove('active');
+        }
+
+        // Highlight current continent handler icon
+        this.classList.add('active');
+
+        var ca = this.getAttribute('id');
+        var m = self.filterMarkers(ca);
+
+        self.args.map_continent_active = ca; // Set active continent arg
+        self.args.map_bounds = new google.maps.LatLngBounds();
+
+        if (m.length > 1) {
+
+            // Each marker from active continent will extend map bounds
+            for (var i = 0; i < m.length; i++) {
+                self.args.map_bounds.extend(new google.maps.LatLng(m[i].latitude, m[i].longitude));
+            }
+
+            self.map.fitBounds(self.args.map_bounds);
+
+        } else {
+
+            // Single marker? So just center on it and zoom
+            self.map.setCenter(new google.maps.LatLng(m[0].latitude, m[0].longitude));
+            self.map.setZoom(6);
+        }
+    };
+
+    var listenZoom = function () {
+
+        var cz = self.map.getZoom();
+        var dir = this.getAttribute('id');
+
+        switch (dir) {
+
+            case 'map_zoom_in':
+                if (cz == self.args.map_options.maxZoom) return false;
+                self.map.setZoom(cz + 1);
+                break;
+
+            case 'map_zoom_out':
+                if (cz == self.args.map_options.minZoom) return false;
+                self.map.setZoom(cz - 1);
+                break;
+        }
+    };
+
+    for (var i = 0; i < m.length; i++) {
+        new CustomMarker(
+            new google.maps.LatLng(m[i].latitude, m[i].longitude),
+            this.map,
+            {
+                marker_id: m[i].id,
+                location_name: m[i].location_name,
+                color: m[i].color
+            }
+        );
+    }
+
+    if (this.args.map_markers.length >= 2) this.detectMarkersCollisions();
+
+    this.limitGlobalLatitude();
+    this.args.map_markers_dom = this.args.map_element.getElementsByClassName('marker');
+
+    // Listen for continent change
+    for (var i = 0; i < ch.length; i++) {
+        ch[i].addEventListener('click', listenContinent, false);
+    }
+
+    // Lister for zoom change
+    for (var i = 0; i < zh.length; i++) {
+        zh[i].addEventListener('click', listenZoom, false);
+    }
+};
+
+Gladstone.prototype.filterMarkers = function (continent) {
+
+    if (continent == 'map_restore') {
+        return this.args.map_markers;
+    }
+
+    return this.args.map_markers.filter(function (marker) {
+        return marker.continent == continent;
+    });
+};
+
+Gladstone.prototype.detectMarkersCollisions = function () {
+
+    this.map.addListener('idle', (function () {
+
+        var self = this;
+
+        var run = function () {
+
+            var sensitivity = 10;
+            var markers = [];
+            var markers_dom = self.args.map_markers_dom;
+            var markers_dom_count = markers_dom.length;
+            var width = 200 + sensitivity;
+            var height = 32 + sensitivity;
+            var x1, y1;
+            var s1, s2;
+
+            for (var i = 0; i < markers_dom_count; i++) {
+
+                var div = markers_dom[i];
+
+                markers.push({
+                    square: div,
+                    garbage: false,
+                    x: x1 = Number(div.offsetLeft),
+                    y: y1 = Number(div.offsetTop),
+                    b: y1 + height,
+                    r: x1 + width
+                });
+            }
+
+            for (var i = 0; i < markers_dom_count; i++) {
+
+                s1 = markers[i];
+
+                for (var j = i + 1; j < markers_dom_count; j++) {
+
+                    // Ignore garbage
+                    if ( ! markers[j].garbage) {
+
+                        s2 = markers[j];
+
+                        if (s1.x > s2.r || s1.y > s2.b || s1.r < s2.x || s1.b < s2.y) {
+                            s2.square.classList.remove('collides');
+                        } else {
+                            s2.garbage = true;
+                            s2.square.classList.add('collides');
+                        }
+                    }
+                }
+            }
+        };
+
+        if (this.args.map_markers_dom.length > 1) run();
+
+    }.bind(this)));
+};
+
+Gladstone.prototype.limitGlobalLatitude = function () {
+
+    this.map.addListener('dragstart', (function () {
+        this.args.map_position_current = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
+    }.bind(this)));
+
+    this.map.addListener('idle', (function () {
+
+        // There's no point of limiting the latitude when all markers have to be displayed
+        if (this.args.map_continent_active == 'map_restore') return;
+
+        var _mb = {
+            lat_max: this.map.getBounds().getNorthEast().lat(),
+            lat_min: this.map.getBounds().getSouthWest().lat(),
+            lng_min: this.map.getBounds().getSouthWest().lng(),
+            lng_max: this.map.getBounds().getNorthEast().lng()
+        };
+
+        // Limit north
+        if (_mb.lat_max > this.args.map_limit_lat_north && this.args.map_position_current !== null) {
+            this.map.setCenter(this.args.map_position_current);
+        }
+
+        // Limit south
+        if (_mb.lat_min < this.args.map_limit_lat_south && this.args.map_position_current !== null) {
+            this.map.setCenter(this.args.map_position_current);
+        }
+
+    }.bind(this)));
+};
