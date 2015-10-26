@@ -5,8 +5,8 @@ function Gladstone(selector, markers) {
         this.args = {
             map_element: document.getElementById(selector),
             map_bounds: new google.maps.LatLngBounds(),
-            map_markers: markers,
             map_markers_dom: null,
+            map_markers_custom: [],
             map_continent_active: null,
             map_continent_default: 'australia',
             map_position_current: null,
@@ -40,10 +40,9 @@ function Gladstone(selector, markers) {
 
 Gladstone.prototype.setMarkers = function () {
 
-    if (this.args.map_markers.length === 0) return false;
+    if (markers.length === 0) return false;
 
     var self = this;
-    var m = this.args.map_markers;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
 
@@ -57,16 +56,16 @@ Gladstone.prototype.setMarkers = function () {
         this.classList.add('active');
 
         var ca = this.getAttribute('id');
-        var m = self.filterMarkers(ca);
+        var fm = self.filterMarkers(ca);
 
         self.args.map_continent_active = ca; // Set active continent arg
         self.args.map_bounds = new google.maps.LatLngBounds();
 
-        if (m.length > 1) {
+        if (fm.length > 1) {
 
             // Each marker from active continent will extend map bounds
-            for (var i = 0; i < m.length; i++) {
-                self.args.map_bounds.extend(new google.maps.LatLng(m[i].latitude, m[i].longitude));
+            for (var i = 0; i < fm.length; i++) {
+                self.args.map_bounds.extend(new google.maps.LatLng(fm[i].latlng.lat(), fm[i].latlng.lng()));
             }
 
             self.map.fitBounds(self.args.map_bounds);
@@ -74,7 +73,7 @@ Gladstone.prototype.setMarkers = function () {
         } else {
 
             // Single marker? So just center on it and zoom
-            self.map.setCenter(new google.maps.LatLng(m[0].latitude, m[0].longitude));
+            self.map.setCenter(new google.maps.LatLng(fm[0].latlng.lat(), fm[0].latlng.lng()));
             self.map.setZoom(6);
         }
     };
@@ -98,21 +97,26 @@ Gladstone.prototype.setMarkers = function () {
         }
     };
 
-    for (var i = 0; i < m.length; i++) {
-        new CustomMarker(
-            new google.maps.LatLng(m[i].latitude, m[i].longitude),
-            this.map,
-            {
-                marker_id: m[i].id,
-                location_name: m[i].location_name,
-                color: m[i].color
-            }
+    for (var i = 0; i < markers.length; i++) {
+        this.args.map_markers_custom.push(
+            new CustomMarker(
+                markers[i].continent,
+                new google.maps.LatLng(markers[i].latitude, markers[i].longitude),
+                this.map,
+                {
+                    marker_id: markers[i].id,
+                    location_name: markers[i].location_name,
+                    color: markers[i].color
+                }
+            )
         );
     }
 
-    if (this.args.map_markers.length >= 2) this.detectMarkersCollisions();
+    if (this.args.map_markers_custom.length >= 2) this.detectMarkersCollisions();
 
-    this.limitGlobalLatitude();
+    //this.limitGlobalLatitude();
+    this.countVisibleMarkers();
+
     this.args.map_markers_dom = this.args.map_element.getElementsByClassName('marker');
 
     // Listen for continent change
@@ -129,10 +133,10 @@ Gladstone.prototype.setMarkers = function () {
 Gladstone.prototype.filterMarkers = function (continent) {
 
     if (continent == 'map_restore') {
-        return this.args.map_markers;
+        return this.args.map_markers_custom;
     }
 
-    return this.args.map_markers.filter(function (marker) {
+    return this.args.map_markers_custom.filter(function (marker) {
         return marker.continent == continent;
     });
 };
@@ -142,7 +146,6 @@ Gladstone.prototype.detectMarkersCollisions = function () {
     this.map.addListener('idle', (function () {
 
         var self = this;
-
         var run = function () {
 
             var sensitivity = 2;
@@ -224,4 +227,22 @@ Gladstone.prototype.limitGlobalLatitude = function () {
         }
 
     }.bind(this)));
+};
+
+Gladstone.prototype.countVisibleMarkers = function () {
+
+    this.map.addListener('idle', (function () {
+
+        var bounds = this.map.getBounds();
+        var m = this.args.map_markers_custom;
+        var c = 0;
+
+        for (var i = 0; i < m.length; i++) {
+            if (bounds.contains(new google.maps.LatLng(m[i].latlng.lat(), m[i].latlng.lng()))) c++;
+        }
+
+        console.log(c);
+
+    }.bind(this)));
+
 };

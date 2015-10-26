@@ -1,4 +1,5 @@
-function CustomMarker(latlng, map, args) {
+function CustomMarker(continent, latlng, map, args) {
+    this.continent = continent;
     this.latlng = latlng;
     this.args = args;
     this.setMap(map);
