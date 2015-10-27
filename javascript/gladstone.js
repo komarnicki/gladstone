@@ -48,6 +48,7 @@ Gladstone.prototype.setMarkers = function () {
     var markers = this.args.map_markers;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
+    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'color', 'location_name'];
 
     // If no markers, then hide unnecessary icons, set minimum zoom on the map and say Goodbye!
     if (markers.length === 0) {
@@ -69,33 +70,38 @@ Gladstone.prototype.setMarkers = function () {
 
     var listenContinent = function () {
 
-        for (var i = 0; i < ch.length; i++) {
-            ch[i].classList.remove('active');
-        }
-
-        // Highlight current continent handler icon
-        this.classList.add('active');
-
         var ca = this.getAttribute('id');
         var fm = self.filterMarkers(ca);
+        var _fml = fm.length;
 
-        self.args.map_continent_active = ca; // Set active continent arg
-        self.args.map_bounds = new google.maps.LatLngBounds();
+        // No point in switching bounds to continent that has no markers
+        if (_fml > 0) {
 
-        if (fm.length > 1) {
-
-            // Each marker from active continent will extend map bounds
-            for (var i = 0; i < fm.length; i++) {
-                self.args.map_bounds.extend(new google.maps.LatLng(fm[i].latlng.lat(), fm[i].latlng.lng()));
+            for (var i = 0; i < ch.length; i++) {
+                ch[i].classList.remove('active');
             }
 
-            self.map.fitBounds(self.args.map_bounds);
+            // Highlight current continent handler icon
+            this.classList.add('active');
 
-        } else {
+            self.args.map_continent_active = ca; // Set active continent arg
+            self.args.map_bounds = new google.maps.LatLngBounds();
 
-            // Single marker? So just center on it and zoom
-            self.map.setCenter(new google.maps.LatLng(fm[0].latlng.lat(), fm[0].latlng.lng()));
-            self.map.setZoom(6);
+            if (_fml > 1) {
+
+                // Each marker from active continent will extend map bounds
+                for (var i = 0; i < _fml; i++) {
+                    self.args.map_bounds.extend(new google.maps.LatLng(fm[i].latlng.lat(), fm[i].latlng.lng()));
+                }
+
+                self.map.fitBounds(self.args.map_bounds);
+
+            } else {
+
+                // Single marker? So just center on it and zoom
+                self.map.setCenter(new google.maps.LatLng(fm[0].latlng.lat(), fm[0].latlng.lng()));
+                self.map.setZoom(6);
+            }
         }
     };
 
@@ -117,6 +123,14 @@ Gladstone.prototype.setMarkers = function () {
                 break;
         }
     };
+
+    // Validate input
+    for (var i = 0; i < markers.length; i++) {
+        for (var _k in markers[i]) {
+            // Remove the marker entirely from input array before passing to CustomMarker object
+            if (valid_keys.indexOf(_k) === -1) markers.splice(markers[i], 1);
+        }
+    }
 
     for (var i = 0; i < markers.length; i++) {
 
