@@ -16,8 +16,13 @@ CustomMarker.prototype.draw = function () {
     if (!div) {
 
         div = this.div = document.createElement('div');
+
         div.id = 'marker_' + self.args.marker_id;
         div.className = 'noselect marker ' + self.args.color;
+        
+        // Set ID of the current marker and chain closest marker on both left and right
+        div.dataset.previous_id = self.args.marker_previous_id;
+        div.dataset.next_id = self.args.marker_next_id;
 
         div.innerHTML =
             '<span id="marker_pointer_' + self.args.marker_id + '" class="noselect marker_pointer ion-location ' + self.args.color + '"></span>' +

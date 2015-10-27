@@ -118,6 +118,10 @@ Gladstone.prototype.setMarkers = function () {
     };
 
     for (var i = 0; i < markers.length; i++) {
+
+        var _prev = (i === 0) ? markers.length - 1 : i - 1;
+        var _next = (i === markers.length - 1) ? 0 : i + 1;
+
         this.args.map_markers_custom.push(
             new CustomMarker(
                 markers[i].continent,
@@ -125,6 +129,8 @@ Gladstone.prototype.setMarkers = function () {
                 this.map,
                 {
                     marker_id: markers[i].id,
+                    marker_previous_id: markers[_prev].id,
+                    marker_next_id: markers[_next].id,
                     location_name: markers[i].location_name,
                     color: markers[i].color
                 }
