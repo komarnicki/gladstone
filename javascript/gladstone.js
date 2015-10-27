@@ -45,10 +45,12 @@ function Gladstone(selector, markers) {
 
 Gladstone.prototype.setMarkers = function () {
 
+    var markers = this.args.map_markers;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
 
-    if (this.args.map_markers.length === 0) {
+    // If no markers, then hide unnecessary icons, set minimum zoom on the map and say Goodbye!
+    if (markers.length === 0) {
 
         for (var i = 0; i < ch.length; i++) {
             ch[i].style.display = 'none';
@@ -64,7 +66,6 @@ Gladstone.prototype.setMarkers = function () {
     }
 
     var self = this;
-    var markers = this.args.map_markers;
 
     var listenContinent = function () {
 
