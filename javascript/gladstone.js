@@ -5,8 +5,10 @@ function Gladstone(selector, markers) {
         this.args = {
             map_element: document.getElementById(selector),
             map_bounds: new google.maps.LatLngBounds(),
+            map_markers: markers,
             map_markers_dom: null,
             map_markers_custom: [],
+            map_markers_count_visible: 0,
             map_continent_active: null,
             map_continent_default: 'australia',
             map_position_current: null,
@@ -29,6 +31,9 @@ function Gladstone(selector, markers) {
         this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
         this.map.setCenter(this.args.map_position_default);
         this.map.setZoom(this.args.map_options.zoom);
+        this.map.addListener('dragstart', (function () {
+            this.args.map_position_current = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
+        }.bind(this)));
 
         this.setMarkers();
 
@@ -40,11 +45,26 @@ function Gladstone(selector, markers) {
 
 Gladstone.prototype.setMarkers = function () {
 
-    if (markers.length === 0) return false;
-
-    var self = this;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
+
+    if (this.args.map_markers.length === 0) {
+
+        for (var i = 0; i < ch.length; i++) {
+            ch[i].style.display = 'none';
+        }
+
+        for (var i = 0; i < zh.length; i++) {
+            zh[i].style.display = 'none';
+        }
+
+        this.map.setZoom(this.args.map_options.minZoom);
+
+        return false;
+    }
+
+    var self = this;
+    var markers = this.args.map_markers;
 
     var listenContinent = function () {
 
@@ -114,9 +134,6 @@ Gladstone.prototype.setMarkers = function () {
 
     if (this.args.map_markers_custom.length >= 2) this.detectMarkersCollisions();
 
-    //this.limitGlobalLatitude();
-    this.countVisibleMarkers();
-
     this.args.map_markers_dom = this.args.map_element.getElementsByClassName('marker');
 
     // Listen for continent change
@@ -128,6 +145,11 @@ Gladstone.prototype.setMarkers = function () {
     for (var i = 0; i < zh.length; i++) {
         zh[i].addEventListener('click', listenZoom, false);
     }
+
+    this.map.addListener('idle', (function () {
+        this.countVisibleMarkers();
+        this.assistWithMarkers();
+    }.bind(this)));
 };
 
 Gladstone.prototype.filterMarkers = function (continent) {
@@ -200,49 +222,56 @@ Gladstone.prototype.detectMarkersCollisions = function () {
 
 Gladstone.prototype.limitGlobalLatitude = function () {
 
-    this.map.addListener('dragstart', (function () {
-        this.args.map_position_current = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
-    }.bind(this)));
+    // There's no point of limiting the latitude when all markers have to be displayed
+    if (this.args.map_continent_active == 'map_restore') return;
 
-    this.map.addListener('idle', (function () {
+    var _mb = {
+        lat_max: this.map.getBounds().getNorthEast().lat(),
+        lat_min: this.map.getBounds().getSouthWest().lat(),
+        lng_min: this.map.getBounds().getSouthWest().lng(),
+        lng_max: this.map.getBounds().getNorthEast().lng()
+    };
 
-        // There's no point of limiting the latitude when all markers have to be displayed
-        if (this.args.map_continent_active == 'map_restore') return;
+    // Limit north
+    if (_mb.lat_max > this.args.map_limit_lat_north && this.args.map_position_current !== null) {
+        this.map.setCenter(this.args.map_position_current);
+    }
 
-        var _mb = {
-            lat_max: this.map.getBounds().getNorthEast().lat(),
-            lat_min: this.map.getBounds().getSouthWest().lat(),
-            lng_min: this.map.getBounds().getSouthWest().lng(),
-            lng_max: this.map.getBounds().getNorthEast().lng()
-        };
-
-        // Limit north
-        if (_mb.lat_max > this.args.map_limit_lat_north && this.args.map_position_current !== null) {
-            this.map.setCenter(this.args.map_position_current);
-        }
-
-        // Limit south
-        if (_mb.lat_min < this.args.map_limit_lat_south && this.args.map_position_current !== null) {
-            this.map.setCenter(this.args.map_position_current);
-        }
-
-    }.bind(this)));
+    // Limit south
+    if (_mb.lat_min < this.args.map_limit_lat_south && this.args.map_position_current !== null) {
+        this.map.setCenter(this.args.map_position_current);
+    }
 };
 
 Gladstone.prototype.countVisibleMarkers = function () {
 
-    this.map.addListener('idle', (function () {
+    var bounds = this.map.getBounds();
+    var m = this.args.map_markers_custom;
+    var c = 0;
 
-        var bounds = this.map.getBounds();
-        var m = this.args.map_markers_custom;
-        var c = 0;
+    for (var i = 0; i < m.length; i++) {
+        if (bounds.contains(new google.maps.LatLng(m[i].latlng.lat(), m[i].latlng.lng()))) c++;
+    }
 
-        for (var i = 0; i < m.length; i++) {
-            if (bounds.contains(new google.maps.LatLng(m[i].latlng.lat(), m[i].latlng.lng()))) c++;
+    this.args.map_markers_count_visible = c;
+};
+
+Gladstone.prototype.assistWithMarkers = function () {
+
+    var hint = document.getElementById('marker_assist');
+
+    if (this.args.map_markers_count_visible === 0) {
+
+        this.args.map_continent_active = null;
+
+        var ch = document.getElementsByClassName('continent_handler');
+
+        for (var i = 0; i < ch.length; i++) {
+            ch[i].classList.remove('active');
         }
 
-        console.log(c);
-
-    }.bind(this)));
-
+        hint.style.display = 'block';
+    } else {
+        hint.style.display = 'none';
+    }
 };
