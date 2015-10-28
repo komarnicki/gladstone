@@ -48,7 +48,7 @@ Gladstone.prototype.setMarkers = function () {
     var markers = this.args.map_markers;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
-    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'color', 'location_name'];
+    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'color', 'label', 'description'];
 
     // If no markers, then hide unnecessary icons, set minimum zoom on the map and say Goodbye!
     if (markers.length === 0) {
@@ -76,6 +76,8 @@ Gladstone.prototype.setMarkers = function () {
 
         // No point in switching bounds to continent that has no markers
         if (_fml > 0) {
+
+            self.storyClose();
 
             for (var i = 0; i < ch.length; i++) {
                 ch[i].classList.remove('active');
@@ -132,6 +134,7 @@ Gladstone.prototype.setMarkers = function () {
         }
     }
 
+    // Create custom markers from validated input
     for (var i = 0; i < markers.length; i++) {
 
         var _prev = (i === 0) ? markers.length - 1 : i - 1;
@@ -146,13 +149,14 @@ Gladstone.prototype.setMarkers = function () {
                     marker_id: markers[i].id,
                     marker_previous_id: markers[_prev].id,
                     marker_next_id: markers[_next].id,
-                    location_name: markers[i].location_name,
-                    color: markers[i].color
+                    color: markers[i].color,
+                    label: markers[i].label
                 }
             )
         );
     }
 
+    // Enable collision detection if there are at least two markers
     if (this.args.map_markers_custom.length >= 2) this.detectMarkersCollisions();
 
     this.args.map_markers_dom = this.args.map_element.getElementsByClassName('marker');
@@ -295,4 +299,42 @@ Gladstone.prototype.assistWithMarkers = function () {
     } else {
         hint.style.display = 'none';
     }
+};
+
+Gladstone.prototype.storyOpen = function (marker_id) {
+
+    this.storyClose();
+
+    var story = document.getElementById('story');
+    var story_close = document.getElementById('story_close');
+    var m = this.args.map_markers_custom.filter(function (marker) {
+        return marker.args.marker_id == marker_id;
+    });
+
+    if (story.classList.contains('opened') === true && story.getAttribute('data-current') == m[0].args.marker_id) return false;
+
+    this.map.panTo(new google.maps.LatLng(m[0].latlng.lat(), m[0].latlng.lng()));
+    this.map.panBy(window.innerWidth * -0.25, 0);
+
+    story.classList.add('opened');
+    story.classList.add(m[0].args.color);
+    story.setAttribute('data-previous', m[0].args.marker_previous_id);
+    story.setAttribute('data-current', m[0].args.marker_id);
+    story.setAttribute('data-next', m[0].args.marker_next_id);
+
+    story_close.addEventListener('click', this.storyClose, false);
+};
+
+Gladstone.prototype.storyClose = function () {
+
+    var story = document.getElementById('story');
+
+    story.className = '';
+    story.setAttribute('data-previous', '');
+    story.setAttribute('data-current', '');
+    story.setAttribute('data-next', '');
+
+    console.log(this.map);
+
+    //this.map.panBy(window.innerWidth * 0.25, 0);
 };

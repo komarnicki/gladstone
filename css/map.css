@@ -96,6 +96,40 @@ aside#map_continents_controls {
     background-repeat: no-repeat;
 }
 
+#story {
+    top: 0;
+    display: none;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    z-index: 2000;
+    width: 50%;
+}
+
+#story.opened {
+    display: block;
+}
+
+#story header {
+    overflow: hidden;
+    width: 100%;
+    height: 50px;
+}
+
+#story nav {
+    float: left;
+    font-size: 26px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    width: 50px;
+}
+
+#story #content {
+    position: relative;
+}
+
 .marker {
     width: 200px;
     height: 18px;
@@ -170,36 +204,47 @@ aside#map_continents_controls {
     filter: grayscale(100%) brightness(150%);
 }
 
+#story.color_red1,
 .marker.color_red1 { border-color: #f05456; background-color: #f05456; color: #ffffff; }
 .marker_pointer.color_red1 { color: #f05456; }
 
+#story.color_red2,
 .marker.color_red2 { border-color: #d52e30; background-color: #d52e30; color: #ffffff; }
 .marker_pointer.color_red2 { color: #d52e30; }
 
+#story.color_yellow1,
 .marker.color_yellow1 { border-color: #ffcc00; background-color: #ffcc00; color: #000000; }
 .marker_pointer.color_yellow1 { color: #ffcc00; }
 
+#story.color_yellow2,
 .marker.color_yellow2 { border-color: #f5b417; background-color: #f5b417; color: #000000; }
 .marker_pointer.color_yellow2 { color: #f5b417; }
 
+#story.color_green1,
 .marker.color_green1 { border-color: #43a735; background-color: #43a735; color: #ffffff; }
 .marker_pointer.color_green1 { color: #43a735; }
 
+#story.color_green2,
 .marker.color_green2 { border-color: #2eb851; background-color: #2eb851; color: #ffffff; }
 .marker_pointer.color_green2 { color: #2eb851; }
 
+#story.color_blue1,
 .marker.color_blue1 { border-color: #3e4ea1; background-color: #3e4ea1; color: #ffffff; }
 .marker_pointer.color_blue1 { color: #3e4ea1; }
 
+#story.color_blue2,
 .marker.color_blue2 { border-color: #08589d; background-color: #08589d; color: #ffffff; }
 .marker_pointer.color_blue2 { color: #08589d; }
 
+#story.color_blue3,
 .marker.color_blue3 { border-color: #577ec0; background-color: #577ec0; color: #ffffff; }
 .marker_pointer.color_blue3 { color: #577ec0; }
 
+#story.color_pink1,
 .marker.color_pink1 { border-color: #e93375; background-color: #e93375; color: #ffffff; }
 .marker_pointer.color_pink1 { color: #e93375; }
 
+#story.color_violet1,
 .marker.color_violet1 { border-color: #904098; background-color: #904098; color: #ffffff; }
 .marker_pointer.color_violet1 { color: #904098; }
 
