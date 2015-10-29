@@ -11,7 +11,8 @@ function Gladstone(selector, markers) {
             map_markers_count_visible: 0,
             map_continent_active: null,
             map_continent_default: 'australia',
-            map_position_current: null,
+            map_current_position: null,
+            map_current_zoom: null,
             map_position_default: new google.maps.LatLng(-27.480515, 153.066031), // Brisbane
             map_options: {
                 styles: [ { featureType: 'administrative', elementType: 'all', stylers: [ { visibility: 'off' } ] }, { featureType: 'landscape', elementType: 'all', stylers: [ {hue: '#FFFFFF'}, {saturation: -100}, {lightness: 100}, {visibility: 'on'} ] }, { featureType: 'poi', elementType: 'all', stylers: [ {visibility: 'off'} ] }, { featureType: 'road', elementType: 'all', stylers: [ {visibility: 'on'}, {lightness: -30} ] }, { featureType: 'road', elementType: 'labels', stylers: [ {visibility: 'off'} ] }, { featureType: 'transit', elementType: 'all', stylers: [ {visibility: 'off'} ] }, { featureType: 'water', elementType: 'all', stylers: [ {saturation: -100}, {lightness: -100} ] }, { featureType: 'landscape', elementType: 'labels.text', stylers: [ {visibility: 'off'} ] }, { featureType: 'all', elementType: 'all', stylers: [ {saturation: -100}, {lightness: 91} ] } ],
@@ -33,10 +34,6 @@ function Gladstone(selector, markers) {
         this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
         this.map.setCenter(this.args.map_position_default);
         this.map.setZoom(this.args.map_options.zoom);
-
-        this.map.addListener('dragstart', (function () {
-            this.args.map_position_current = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
-        }.bind(this)));
 
         this.setMarkers();
 
@@ -266,13 +263,13 @@ Gladstone.prototype.limitGlobalLatitude = function () {
     };
 
     // Limit north
-    if (_mb.lat_max > this.args.map_limit_lat_north && this.args.map_position_current !== null) {
-        this.map.setCenter(this.args.map_position_current);
+    if (_mb.lat_max > this.args.map_limit_lat_north && this.args.map_current_position !== null) {
+        this.map.setCenter(this.args.map_current_position);
     }
 
     // Limit south
-    if (_mb.lat_min < this.args.map_limit_lat_south && this.args.map_position_current !== null) {
-        this.map.setCenter(this.args.map_position_current);
+    if (_mb.lat_min < this.args.map_limit_lat_south && this.args.map_current_position !== null) {
+        this.map.setCenter(this.args.map_current_position);
     }
 };
 
@@ -311,6 +308,9 @@ Gladstone.prototype.assistWithMarkers = function () {
 
 Gladstone.prototype.storyOpen = function (marker_id) {
 
+    this.args.map_current_position = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
+    this.args.map_current_zoom = this.map.getZoom();
+
     this.storyClose();
 
     var m = this.args.map_markers_custom.filter(function (marker) {
@@ -340,5 +340,6 @@ Gladstone.prototype.storyClose = function () {
     this.args.el_story.setAttribute('data-next', '');
 
     this.map.panBy(window.innerWidth * 0.25, 0);
-    this.map.setZoom(this.args.map_options.zoom);
+    this.map.setZoom(this.args.map_current_zoom);
+    this.map.panTo(this.args.map_current_position);
 };
