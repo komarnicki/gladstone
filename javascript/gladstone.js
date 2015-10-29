@@ -368,9 +368,11 @@ Gladstone.prototype.storyClose = function () {
     this.args.el_story_image.style.backgroundImage = '';
     this.args.el_story_image.style.height = '';
 
-    this.map.panBy(window.innerWidth * 0.25, 0);
-    this.map.setZoom(this.args.map_current_zoom);
-    this.map.panTo(this.args.map_current_position);
+    if (this.args.map_current_position !== null) {
+        this.map.panBy(window.innerWidth * 0.25, 0);
+        this.map.setZoom(this.args.map_current_zoom);
+        this.map.panTo(this.args.map_current_position);
+    }
 };
 
 Gladstone.prototype.storyPrevious = function () {
