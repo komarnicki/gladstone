@@ -28,7 +28,9 @@ function Gladstone(selector, markers) {
             map_limit_lat_north: 60,
             map_limit_lat_south: -52,
             el_story: document.getElementById('story'),
-            el_story_close: document.getElementById('story_close')
+            el_story_close: document.getElementById('story_close'),
+            el_story_previous: document.getElementById('story_previous'),
+            el_story_next: document.getElementById('story_next')
         };
 
         this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
@@ -159,6 +161,14 @@ Gladstone.prototype.setMarkers = function () {
 
     google.maps.event.addDomListener(this.args.el_story_close, 'click', function () {
         self.storyClose();
+    });
+
+    google.maps.event.addDomListener(this.args.el_story_previous, 'click', function () {
+        self.storyPrevious();
+    });
+
+    google.maps.event.addDomListener(this.args.el_story_next, 'click', function () {
+        self.storyNext();
     });
 
     // Enable collision detection if there are at least two markers
@@ -342,4 +352,16 @@ Gladstone.prototype.storyClose = function () {
     this.map.panBy(window.innerWidth * 0.25, 0);
     this.map.setZoom(this.args.map_current_zoom);
     this.map.panTo(this.args.map_current_position);
+};
+
+Gladstone.prototype.storyPrevious = function () {
+
+    var _dest = this.args.el_story.getAttribute('data-previous');
+    this.storyOpen(_dest);
+};
+
+Gladstone.prototype.storyNext = function () {
+
+    var _dest = this.args.el_story.getAttribute('data-next');
+    this.storyOpen(_dest);
 };
