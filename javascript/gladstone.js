@@ -30,7 +30,9 @@ function Gladstone(selector, markers) {
             el_story: document.getElementById('story'),
             el_story_close: document.getElementById('story_close'),
             el_story_previous: document.getElementById('story_previous'),
-            el_story_next: document.getElementById('story_next')
+            el_story_next: document.getElementById('story_next'),
+            el_story_title: document.getElementById('story_title'),
+            el_story_image: document.getElementById('story_image')
         };
 
         this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
@@ -50,7 +52,7 @@ Gladstone.prototype.setMarkers = function () {
     var _im = this.args.map_markers;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
-    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'zoom', 'color', 'label', 'description'];
+    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'zoom', 'color', 'image', 'label', 'description'];
 
     // Validate input
     for (var i = 0; i < _im.length; i++) {
@@ -152,6 +154,7 @@ Gladstone.prototype.setMarkers = function () {
                     marker_previous_id: _im[_prev].id,
                     marker_next_id: _im[_next].id,
                     color: _im[i].color,
+                    image: _im[i].image,
                     label: _im[i].label,
                     zoom: _im[i].zoom
                 }
@@ -321,8 +324,6 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     this.args.map_current_position = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
     this.args.map_current_zoom = this.map.getZoom();
 
-    this.storyClose();
-
     var m = this.args.map_markers_custom.filter(function (marker) {
         return marker.args.marker_id == marker_id;
     });
@@ -334,20 +335,38 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     this.map.setZoom(m[0].args.zoom);
     this.map.panBy(window.innerWidth * -0.25, 0);
 
+    this.args.el_story.className = '';
     this.args.el_story.classList.add('opened');
     this.args.el_story.classList.add(m[0].args.color);
     this.args.el_story.setAttribute('data-previous', m[0].args.marker_previous_id);
     this.args.el_story.setAttribute('data-current', m[0].args.marker_id);
     this.args.el_story.setAttribute('data-next', m[0].args.marker_next_id);
+    this.args.el_story_title.innerHTML = m[0].args.label;
+
+    var self = this;
+    var _si = new Image();
+
+    _si.onload = function () {
+
+        var _sw = self.args.el_story_image.clientWidth;
+        var _h = Math.floor((_sw * _si.height) / _si.width);
+
+        self.args.el_story_image.style.backgroundImage = 'url(' + m[0].args.image + ')';
+        self.args.el_story_image.style.height = _h + 'px';
+    };
+
+    _si.src = m[0].args.image;
 };
 
 Gladstone.prototype.storyClose = function () {
 
     this.args.el_story.className = '';
-
     this.args.el_story.setAttribute('data-previous', '');
     this.args.el_story.setAttribute('data-current', '');
     this.args.el_story.setAttribute('data-next', '');
+    this.args.el_story_title.innerHTML = '';
+    this.args.el_story_image.style.backgroundImage = '';
+    this.args.el_story_image.style.height = '';
 
     this.map.panBy(window.innerWidth * 0.25, 0);
     this.map.setZoom(this.args.map_current_zoom);
