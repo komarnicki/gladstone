@@ -126,6 +126,11 @@ aside#map_continents_controls {
     width: 50px;
 }
 
+#story nav:hover {
+    background-color: rgba(255, 255, 255, 0.095);
+    cursor: pointer;
+}
+
 #story #content {
     position: relative;
 }

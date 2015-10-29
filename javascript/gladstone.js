@@ -25,12 +25,15 @@ function Gladstone(selector, markers) {
                 draggableCursor: 'default'
             },
             map_limit_lat_north: 60,
-            map_limit_lat_south: -52
+            map_limit_lat_south: -52,
+            el_story: document.getElementById('story'),
+            el_story_close: document.getElementById('story_close')
         };
 
         this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
         this.map.setCenter(this.args.map_position_default);
         this.map.setZoom(this.args.map_options.zoom);
+
         this.map.addListener('dragstart', (function () {
             this.args.map_position_current = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
         }.bind(this)));
@@ -45,13 +48,21 @@ function Gladstone(selector, markers) {
 
 Gladstone.prototype.setMarkers = function () {
 
-    var markers = this.args.map_markers;
+    var _im = this.args.map_markers;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
-    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'color', 'label', 'description'];
+    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'zoom', 'color', 'label', 'description'];
+
+    // Validate input
+    for (var i = 0; i < _im.length; i++) {
+        for (var _k in _im[i]) {
+            // Remove the marker entirely from input array before passing to CustomMarker object
+            if (valid_keys.indexOf(_k) === -1) _im.splice(i, 1);
+        }
+    }
 
     // If no markers, then hide unnecessary icons, set minimum zoom on the map and say Goodbye!
-    if (markers.length === 0) {
+    if (_im.length === 0) {
 
         for (var i = 0; i < ch.length; i++) {
             ch[i].style.display = 'none';
@@ -72,7 +83,7 @@ Gladstone.prototype.setMarkers = function () {
 
         var ca = this.getAttribute('id');
         var fm = self.filterMarkers(ca);
-        var _fml = fm.length;
+        var _fml = fm.length; // Filtered markers / length
 
         // No point in switching bounds to continent that has no markers
         if (_fml > 0) {
@@ -126,35 +137,32 @@ Gladstone.prototype.setMarkers = function () {
         }
     };
 
-    // Validate input
-    for (var i = 0; i < markers.length; i++) {
-        for (var _k in markers[i]) {
-            // Remove the marker entirely from input array before passing to CustomMarker object
-            if (valid_keys.indexOf(_k) === -1) markers.splice(markers[i], 1);
-        }
-    }
-
     // Create custom markers from validated input
-    for (var i = 0; i < markers.length; i++) {
+    for (var i = 0; i < _im.length; i++) {
 
-        var _prev = (i === 0) ? markers.length - 1 : i - 1;
-        var _next = (i === markers.length - 1) ? 0 : i + 1;
+        var _prev = (i === 0) ? _im.length - 1 : i - 1;
+        var _next = (i === _im.length - 1) ? 0 : i + 1;
 
         this.args.map_markers_custom.push(
             new CustomMarker(
-                markers[i].continent,
-                new google.maps.LatLng(markers[i].latitude, markers[i].longitude),
+                _im[i].continent,
+                new google.maps.LatLng(_im[i].latitude, _im[i].longitude),
                 this.map,
                 {
-                    marker_id: markers[i].id,
-                    marker_previous_id: markers[_prev].id,
-                    marker_next_id: markers[_next].id,
-                    color: markers[i].color,
-                    label: markers[i].label
+                    marker_id: _im[i].id,
+                    marker_previous_id: _im[_prev].id,
+                    marker_next_id: _im[_next].id,
+                    color: _im[i].color,
+                    label: _im[i].label,
+                    zoom: _im[i].zoom
                 }
             )
         );
     }
+
+    google.maps.event.addDomListener(this.args.el_story_close, 'click', function () {
+        self.storyClose();
+    });
 
     // Enable collision detection if there are at least two markers
     if (this.args.map_markers_custom.length >= 2) this.detectMarkersCollisions();
@@ -305,36 +313,32 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
     this.storyClose();
 
-    var story = document.getElementById('story');
-    var story_close = document.getElementById('story_close');
     var m = this.args.map_markers_custom.filter(function (marker) {
         return marker.args.marker_id == marker_id;
     });
 
-    if (story.classList.contains('opened') === true && story.getAttribute('data-current') == m[0].args.marker_id) return false;
+    if (this.args.el_story.classList.contains('opened') === true &&
+        this.args.el_story.getAttribute('data-current') == m[0].args.marker_id) return false;
 
     this.map.panTo(new google.maps.LatLng(m[0].latlng.lat(), m[0].latlng.lng()));
+    this.map.setZoom(m[0].args.zoom);
     this.map.panBy(window.innerWidth * -0.25, 0);
 
-    story.classList.add('opened');
-    story.classList.add(m[0].args.color);
-    story.setAttribute('data-previous', m[0].args.marker_previous_id);
-    story.setAttribute('data-current', m[0].args.marker_id);
-    story.setAttribute('data-next', m[0].args.marker_next_id);
-
-    story_close.addEventListener('click', this.storyClose, false);
+    this.args.el_story.classList.add('opened');
+    this.args.el_story.classList.add(m[0].args.color);
+    this.args.el_story.setAttribute('data-previous', m[0].args.marker_previous_id);
+    this.args.el_story.setAttribute('data-current', m[0].args.marker_id);
+    this.args.el_story.setAttribute('data-next', m[0].args.marker_next_id);
 };
 
 Gladstone.prototype.storyClose = function () {
 
-    var story = document.getElementById('story');
+    this.args.el_story.className = '';
 
-    story.className = '';
-    story.setAttribute('data-previous', '');
-    story.setAttribute('data-current', '');
-    story.setAttribute('data-next', '');
+    this.args.el_story.setAttribute('data-previous', '');
+    this.args.el_story.setAttribute('data-current', '');
+    this.args.el_story.setAttribute('data-next', '');
 
-    console.log(this.map);
-
-    //this.map.panBy(window.innerWidth * 0.25, 0);
+    this.map.panBy(window.innerWidth * 0.25, 0);
+    this.map.setZoom(this.args.map_options.zoom);
 };
