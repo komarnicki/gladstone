@@ -129,6 +129,8 @@ Gladstone.prototype.setMarkers = function () {
                 self.map.setZoom(cz - 1);
                 break;
         }
+
+        self.args.map_bound_active = null;
     };
 
     self.args.map_bounds = new google.maps.LatLngBounds();
