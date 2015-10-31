@@ -180,6 +180,16 @@ aside#map_continents_controls {
     padding: 40px 50px 20px;
 }
 
+#story_date,
+#story_position {
+    padding: 0 50px;
+    line-height: 26px;
+}
+
+#story_date span {
+    font-weight: 400;
+}
+
 #story_content_inject > p {
     margin: 0;
     padding: 20px 50px;
@@ -382,18 +392,4 @@ aside#map_continents_controls {
     -o-transform: rotate(-7deg);
     -webkit-transform: rotate(-7deg);
     transform: rotate(-7deg);
-}
-
-#arrow2222 {
-    width: 60px;
-    position: absolute;
-    z-index: 1000;
-    top: 20px;
-    right: 150px;
-    height: 110px;
-    -moz-transform: rotate(-7deg);
-    -o-transform: rotate(-7deg);
-    -webkit-transform: rotate(-7deg);
-    transform: rotate(-7deg);
-
 }

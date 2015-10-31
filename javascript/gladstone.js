@@ -31,6 +31,7 @@ function Gladstone(selector, markers) {
             el_story_header: document.getElementById('story_header'),
             el_story_image: document.getElementById('story_image'),
             el_story_title: document.getElementById('story_title'),
+            el_story_date: document.getElementById('story_date'),
             el_story_content: document.getElementById('story_content_inject')
         };
 
@@ -51,7 +52,7 @@ Gladstone.prototype.setMarkers = function () {
     var _im = this.args.map_markers;
     var ch = document.getElementsByClassName('continent_handler');
     var zh = document.getElementsByClassName('zoom_handler');
-    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'zoom', 'color', 'image', 'label', 'description'];
+    var valid_keys = ['id', 'latitude', 'longitude', 'continent', 'zoom', 'color', 'image', 'date', 'label', 'description'];
 
     // Validate input
     for (var i = 0; i < _im.length; i++) {
@@ -153,6 +154,7 @@ Gladstone.prototype.setMarkers = function () {
                     marker_next_id: _im[_next].id,
                     color: _im[i].color,
                     image: _im[i].image,
+                    date: _im[i].date,
                     label: _im[i].label,
                     zoom: _im[i].zoom,
                     description: _im[i].description
@@ -344,6 +346,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     _si.src = m[0].args.image;
 
     this.args.el_story_title.innerHTML = m[0].args.label;
+    this.args.el_story_date.innerHTML = 'I was here on <span>' + m[0].args.date + '</span>';
     this.args.el_story_content.innerHTML = m[0].args.description;
 };
 
@@ -357,6 +360,7 @@ Gladstone.prototype.storyClose = function () {
     this.args.el_story_image.style.backgroundImage = '';
     this.args.el_story_image.style.height = '';
     this.args.el_story_title.innerHTML = '';
+    this.args.el_story_date.innerHTML = '';
     this.args.el_story_content.innerHTML = '';
 
     if (this.args.marker_active !== null) {
