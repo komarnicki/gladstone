@@ -4,6 +4,7 @@ function Gladstone(selector, markers) {
 
         this.args = {
             map_element: document.getElementById(selector),
+            map_bound_active: null,
             map_bounds: new google.maps.LatLngBounds(),
             map_markers: markers,
             map_markers_dom: null,
@@ -85,7 +86,9 @@ Gladstone.prototype.setMarkers = function () {
         var _fml = fm.length; // Filtered markers / length
 
         // No point in switching bounds to continent that has no markers or is already active
-        if (_fml > 0) {
+        if (_fml > 0 && self.args.map_bound_active !== ca) {
+
+            self.args.map_bound_active = ca;
 
             self.storyClose();
 
@@ -159,6 +162,7 @@ Gladstone.prototype.setMarkers = function () {
     }
 
     self.map.fitBounds(self.args.map_bounds);
+    self.args.map_bound_active = 'map_restore';
 
     google.maps.event.addDomListener(this.args.el_story_close, 'click', function () {
         self.storyClose();
