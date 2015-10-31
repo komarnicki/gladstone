@@ -9,10 +9,6 @@ function Gladstone(selector, markers) {
             map_markers_dom: null,
             map_markers_custom: [],
             map_markers_count_visible: 0,
-            map_continent_active: null,
-            map_continent_default: 'australia',
-            map_current_position: null,
-            map_current_zoom: null,
             map_position_default: new google.maps.LatLng(-27.480515, 153.066031), // Brisbane
             map_options: {
                 styles: [ { featureType: 'administrative', elementType: 'all', stylers: [ { visibility: 'off' } ] }, { featureType: 'landscape', elementType: 'all', stylers: [ {hue: '#FFFFFF'}, {saturation: -100}, {lightness: 100}, {visibility: 'on'} ] }, { featureType: 'poi', elementType: 'all', stylers: [ {visibility: 'off'} ] }, { featureType: 'road', elementType: 'all', stylers: [ {visibility: 'on'}, {lightness: -30} ] }, { featureType: 'road', elementType: 'labels', stylers: [ {visibility: 'off'} ] }, { featureType: 'transit', elementType: 'all', stylers: [ {visibility: 'off'} ] }, { featureType: 'water', elementType: 'all', stylers: [ {saturation: -100}, {lightness: -100} ] }, { featureType: 'landscape', elementType: 'labels.text', stylers: [ {visibility: 'off'} ] }, { featureType: 'all', elementType: 'all', stylers: [ {saturation: -100}, {lightness: 91} ] } ],
@@ -21,18 +17,20 @@ function Gladstone(selector, markers) {
                 maxZoom: 17,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 scrollwheel: true,
+                draggable: true,
                 disableDefaultUI: true,
                 disableDoubleClickZoom: true,
                 draggableCursor: 'default'
             },
-            map_limit_lat_north: 60,
-            map_limit_lat_south: -52,
+            marker_active: null,
             el_story: document.getElementById('story'),
             el_story_close: document.getElementById('story_close'),
             el_story_previous: document.getElementById('story_previous'),
             el_story_next: document.getElementById('story_next'),
+            el_story_header: document.getElementById('story_header'),
+            el_story_image: document.getElementById('story_image'),
             el_story_title: document.getElementById('story_title'),
-            el_story_image: document.getElementById('story_image')
+            el_story_content: document.getElementById('story_content_inject')
         };
 
         this.map = new google.maps.Map(this.args.map_element, this.args.map_options);
@@ -86,7 +84,7 @@ Gladstone.prototype.setMarkers = function () {
         var fm = self.filterMarkers(ca);
         var _fml = fm.length; // Filtered markers / length
 
-        // No point in switching bounds to continent that has no markers
+        // No point in switching bounds to continent that has no markers or is already active
         if (_fml > 0) {
 
             self.storyClose();
@@ -98,24 +96,16 @@ Gladstone.prototype.setMarkers = function () {
             // Highlight current continent handler icon
             this.classList.add('active');
 
-            self.args.map_continent_active = ca; // Set active continent arg
+            // Extend bounds so that all markers from selected continent will be visible
             self.args.map_bounds = new google.maps.LatLngBounds();
 
-            if (_fml > 1) {
-
-                // Each marker from active continent will extend map bounds
-                for (var i = 0; i < _fml; i++) {
-                    self.args.map_bounds.extend(new google.maps.LatLng(fm[i].latlng.lat(), fm[i].latlng.lng()));
-                }
-
-                self.map.fitBounds(self.args.map_bounds);
-
-            } else {
-
-                // Single marker? So just center on it and zoom
-                self.map.setCenter(new google.maps.LatLng(fm[0].latlng.lat(), fm[0].latlng.lng()));
-                self.map.setZoom(6);
+            for (var i = 0; i < _fml; i++) {
+                self.args.map_bounds.extend(new google.maps.LatLng(fm[i].latlng.lat(), fm[i].latlng.lng()));
             }
+
+            self.map.fitBounds(self.args.map_bounds);
+
+            if (_fml === 1) self.map.setZoom(fm[0].args.zoom);
         }
     };
 
@@ -138,16 +128,19 @@ Gladstone.prototype.setMarkers = function () {
         }
     };
 
+    self.args.map_bounds = new google.maps.LatLngBounds();
+
     // Create custom markers from validated input
     for (var i = 0; i < _im.length; i++) {
 
         var _prev = (i === 0) ? _im.length - 1 : i - 1;
         var _next = (i === _im.length - 1) ? 0 : i + 1;
+        var _ll = new google.maps.LatLng(_im[i].latitude, _im[i].longitude);
 
         this.args.map_markers_custom.push(
             new CustomMarker(
                 _im[i].continent,
-                new google.maps.LatLng(_im[i].latitude, _im[i].longitude),
+                _ll,
                 this.map,
                 {
                     marker_id: _im[i].id,
@@ -156,11 +149,16 @@ Gladstone.prototype.setMarkers = function () {
                     color: _im[i].color,
                     image: _im[i].image,
                     label: _im[i].label,
-                    zoom: _im[i].zoom
+                    zoom: _im[i].zoom,
+                    description: _im[i].description
                 }
             )
         );
+
+        self.args.map_bounds.extend(_ll);
     }
+
+    self.map.fitBounds(self.args.map_bounds);
 
     google.maps.event.addDomListener(this.args.el_story_close, 'click', function () {
         self.storyClose();
@@ -263,29 +261,6 @@ Gladstone.prototype.detectMarkersCollisions = function () {
     }.bind(this)));
 };
 
-Gladstone.prototype.limitGlobalLatitude = function () {
-
-    // There's no point of limiting the latitude when all markers have to be displayed
-    if (this.args.map_continent_active == 'map_restore') return;
-
-    var _mb = {
-        lat_max: this.map.getBounds().getNorthEast().lat(),
-        lat_min: this.map.getBounds().getSouthWest().lat(),
-        lng_min: this.map.getBounds().getSouthWest().lng(),
-        lng_max: this.map.getBounds().getNorthEast().lng()
-    };
-
-    // Limit north
-    if (_mb.lat_max > this.args.map_limit_lat_north && this.args.map_current_position !== null) {
-        this.map.setCenter(this.args.map_current_position);
-    }
-
-    // Limit south
-    if (_mb.lat_min < this.args.map_limit_lat_south && this.args.map_current_position !== null) {
-        this.map.setCenter(this.args.map_current_position);
-    }
-};
-
 Gladstone.prototype.countVisibleMarkers = function () {
 
     var bounds = this.map.getBounds();
@@ -305,8 +280,6 @@ Gladstone.prototype.assistWithMarkers = function () {
 
     if (this.args.map_markers_count_visible === 0) {
 
-        this.args.map_continent_active = null;
-
         var ch = document.getElementsByClassName('continent_handler');
 
         for (var i = 0; i < ch.length; i++) {
@@ -321,9 +294,6 @@ Gladstone.prototype.assistWithMarkers = function () {
 
 Gladstone.prototype.storyOpen = function (marker_id) {
 
-    this.args.map_current_position = new google.maps.LatLng(this.map.getCenter().lat(), this.map.getCenter().lng());
-    this.args.map_current_zoom = this.map.getZoom();
-
     var m = this.args.map_markers_custom.filter(function (marker) {
         return marker.args.marker_id == marker_id;
     });
@@ -331,9 +301,19 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     if (this.args.el_story.classList.contains('opened') === true &&
         this.args.el_story.getAttribute('data-current') == m[0].args.marker_id) return false;
 
+    if (this.args.el_story.getAttribute('data-current') != m[0].args.marker_id) {
+        this.storyClose();
+    }
+
+    this.map.setOptions({
+        draggable: false
+    });
     this.map.panTo(new google.maps.LatLng(m[0].latlng.lat(), m[0].latlng.lng()));
     this.map.setZoom(m[0].args.zoom);
     this.map.panBy(window.innerWidth * -0.25, 0);
+
+    this.args.marker_active = document.getElementById('marker_' + marker_id);
+    this.args.marker_active.classList.add('active');
 
     this.args.el_story.className = '';
     this.args.el_story.classList.add('opened');
@@ -341,7 +321,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     this.args.el_story.setAttribute('data-previous', m[0].args.marker_previous_id);
     this.args.el_story.setAttribute('data-current', m[0].args.marker_id);
     this.args.el_story.setAttribute('data-next', m[0].args.marker_next_id);
-    this.args.el_story_title.innerHTML = m[0].args.label;
+    this.args.el_story_header.innerHTML = m[0].args.label;
 
     var self = this;
     var _si = new Image();
@@ -356,6 +336,9 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     };
 
     _si.src = m[0].args.image;
+
+    this.args.el_story_title.innerHTML = m[0].args.label;
+    this.args.el_story_content.innerHTML = m[0].args.description;
 };
 
 Gladstone.prototype.storyClose = function () {
@@ -364,15 +347,21 @@ Gladstone.prototype.storyClose = function () {
     this.args.el_story.setAttribute('data-previous', '');
     this.args.el_story.setAttribute('data-current', '');
     this.args.el_story.setAttribute('data-next', '');
-    this.args.el_story_title.innerHTML = '';
+    this.args.el_story_header.innerHTML = '';
     this.args.el_story_image.style.backgroundImage = '';
     this.args.el_story_image.style.height = '';
+    this.args.el_story_title.innerHTML = '';
+    this.args.el_story_content.innerHTML = '';
 
-    if (this.args.map_current_position !== null) {
-        this.map.panBy(window.innerWidth * 0.25, 0);
-        this.map.setZoom(this.args.map_current_zoom);
-        this.map.panTo(this.args.map_current_position);
+    if (this.args.marker_active !== null) {
+        this.args.marker_active.classList.remove('active');
+        this.args.marker_active = null;
     }
+
+    this.map.panBy(window.innerWidth * 0.25, 0);
+    this.map.setOptions({
+        draggable: this.args.map_options.draggable
+    });
 };
 
 Gladstone.prototype.storyPrevious = function () {
