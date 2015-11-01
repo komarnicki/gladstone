@@ -6,26 +6,20 @@
     <link href="./css/ionicons.min.css" rel="stylesheet" property="stylesheet"/>
     <link href="./css/map.css" rel="stylesheet" property="stylesheet"/>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDj5MYOSGfIzFPC2L6IlX-8T_usSOHwxLI"></script>
-
-    <script src="./javascript/custom_marker.js"></script>
+    <!--<script src="./javascript/custom_marker.js"></script>-->
     <script src="./javascript/gladstone.js"></script>
     <script>
-        try {
+        var gladstone,
+            key     = 'AIzaSyDj5MYOSGfIzFPC2L6IlX-8T_usSOHwxLI',
+            canvas  = 'map_canvas',
+            markers = [
+                {"id":1,"latitude":"-36.860001","longitude":"174.759726","continent":"new_zealand","zoom":10,"color":"color_green1","image":"./images/auckland.jpg","date":"1994-12-05","label":"Auckland","description":"<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris vel nunc tristique tempor id ac risus. Pellentesque congue mauris eget luctus suscipit. Etiam est nulla, laoreet quis risus ac, consequat convallis elit. Duis malesuada erat quis bibendum luctus.</p><p>Maecenas sed mauris bibendum, tempus massa nec, accumsan dui. Aenean suscipit aliquam vestibulum. Nunc iaculis blandit urna, in faucibus nibh molestie ut.</p>"},
+                {"id":2,"latitude":"-38.13884","longitude":"176.235828","continent":"new_zealand","zoom":11,"color":"color_yellow1","image":"./images/rotorua.jpg","date":"1998-03-21","label":"Rotorua","description":"<p>Nulla pellentesque, sem non consequat mattis, nisl est ullamcorper ipsum, vel mollis elit risus a metus. Praesent ac mauris pulvinar, lobortis justo non, luctus velit.</p><p>Nulla finibus pellentesque scelerisque. Mauris mollis convallis eros a hendrerit. Etiam feugiat, enim eu convallis efficitur.</p><p>Curabitur nisi velit, pellentesque sagittis turpis sed, luctus consectetur neque. Morbi vel tincidunt urna, cursus tincidunt ex.</p>"},
+                {"id":3,"latitude":"-39.272605","longitude":"175.580646","continent":"new_zealand","zoom":8,"color":"color_blue1","image":"./images/tongariro.jpg","date":"2003-07-14","label":"Tongariro","description":"<p>Phasellus commodo porta egestas. Etiam tristique lacus vel sem bibendum, in scelerisque dui dictum. Curabitur sodales odio nec tortor lacinia, id finibus enim venenatis.</p><p>Praesent mollis ullamcorper elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p><p>Nam iaculis blandit erat ultricies eleifend. Curabitur commodo massa vel tempus gravida. Donec justo sem, egestas vel felis at, eleifend rhoncus magna. Suspendisse rutrum vitae risus id elementum. Quisque porta.</p>"},
+                {"id":4,"latitude":"-25.357271","longitude":"131.045707","continent":"australia","zoom":6,"color":"color_red2","image":"./images/uluru.jpg","date":"2014-09-02","label":"Uluru","description":"<p>Donec quis risus fermentum lacus posuere tristique. Proin ornare pharetra aliquam.</p><p>Aenean id elementum turpis. In in magna tincidunt, viverra odio in, tincidunt felis. Vivamus varius urna quis ante efficitur laoreet. Donec euismod cursus risus vitae dictum.</p><p>Aliquam erat volutpat. Nam augue dolor, sagittis eu ligula ac, maximus interdum dolor. Phasellus id hendrerit nisi. Praesent non quam convallis, malesuada elit sed.</p>"}
+            ];
 
-            var gladstone;
-            var markers = [
-                    {"id":1,"latitude":"-36.860001","longitude":"174.759726","continent":"new_zealand","zoom":10,"color":"color_green1","image":"./images/auckland.jpg","date":"1994-12-05","label":"Auckland","description":"<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris vel nunc tristique tempor id ac risus. Pellentesque congue mauris eget luctus suscipit. Etiam est nulla, laoreet quis risus ac, consequat convallis elit. Duis malesuada erat quis bibendum luctus.</p><p>Maecenas sed mauris bibendum, tempus massa nec, accumsan dui. Aenean suscipit aliquam vestibulum. Nunc iaculis blandit urna, in faucibus nibh molestie ut.</p>"},
-                    {"id":2,"latitude":"-38.13884","longitude":"176.235828","continent":"new_zealand","zoom":11,"color":"color_yellow1","image":"./images/rotorua.jpg","date":"1998-03-21","label":"Rotorua","description":"<p>Nulla pellentesque, sem non consequat mattis, nisl est ullamcorper ipsum, vel mollis elit risus a metus. Praesent ac mauris pulvinar, lobortis justo non, luctus velit.</p><p>Nulla finibus pellentesque scelerisque. Mauris mollis convallis eros a hendrerit. Etiam feugiat, enim eu convallis efficitur.</p><p>Curabitur nisi velit, pellentesque sagittis turpis sed, luctus consectetur neque. Morbi vel tincidunt urna, cursus tincidunt ex.</p>"},
-                    {"id":3,"latitude":"-39.272605","longitude":"175.580646","continent":"new_zealand","zoom":8,"color":"color_blue1","image":"./images/tongariro.jpg","date":"2003-07-14","label":"Tongariro","description":"<p>Phasellus commodo porta egestas. Etiam tristique lacus vel sem bibendum, in scelerisque dui dictum. Curabitur sodales odio nec tortor lacinia, id finibus enim venenatis.</p><p>Praesent mollis ullamcorper elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p><p>Nam iaculis blandit erat ultricies eleifend. Curabitur commodo massa vel tempus gravida. Donec justo sem, egestas vel felis at, eleifend rhoncus magna. Suspendisse rutrum vitae risus id elementum. Quisque porta.</p>"},
-                    {"id":4,"latitude":"-25.357271","longitude":"131.045707","continent":"australia","zoom":6,"color":"color_red2","image":"./images/uluru.jpg","date":"2014-09-02","label":"Uluru","description":"<p>Donec quis risus fermentum lacus posuere tristique. Proin ornare pharetra aliquam.</p><p>Aenean id elementum turpis. In in magna tincidunt, viverra odio in, tincidunt felis. Vivamus varius urna quis ante efficitur laoreet. Donec euismod cursus risus vitae dictum.</p><p>Aliquam erat volutpat. Nam augue dolor, sagittis eu ligula ac, maximus interdum dolor. Phasellus id hendrerit nisi. Praesent non quam convallis, malesuada elit sed.</p>"}
-                ];
-
-            google.maps.event.addDomListener(window, 'load', function () {
-                gladstone = new Gladstone('map_canvas', markers);
-            });
-
-        } catch (e) { }
+        gladstone = new Gladstone(key, canvas, markers);
     </script>
 </head>
 <body>
