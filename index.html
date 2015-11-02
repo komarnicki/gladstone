@@ -1,7 +1,10 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+
     <title>Gladstone Demo</title>
+
+    <meta charset="utf-8"/>
 
     <link href="./css/ionicons.min.css" rel="stylesheet" property="stylesheet"/>
     <link href="./css/map.css" rel="stylesheet" property="stylesheet"/>
@@ -9,14 +12,34 @@
     <script src="./javascript/gladstone.js"></script>
     <script>
         var gladstone,
-            key     = 'AIzaSyDj5MYOSGfIzFPC2L6IlX-8T_usSOHwxLI',
-            canvas  = 'map_canvas',
-            markers = [
-                {"id":1,"latitude":"-36.860001","longitude":"174.759726","continent":"new_zealand","zoom":10,"color":"color_green1","image":"./images/auckland.jpg","date":"1994-12-05","label":"Auckland","description":"<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris vel nunc tristique tempor id ac risus. Pellentesque congue mauris eget luctus suscipit. Etiam est nulla, laoreet quis risus ac, consequat convallis elit. Duis malesuada erat quis bibendum luctus.</p><p>Maecenas sed mauris bibendum, tempus massa nec, accumsan dui. Aenean suscipit aliquam vestibulum. Nunc iaculis blandit urna, in faucibus nibh molestie ut.</p>"},
-                {"id":2,"latitude":"-38.13884","longitude":"176.235828","continent":"new_zealand","zoom":11,"color":"color_yellow1","image":"./images/rotorua.jpg","date":"1998-03-21","label":"Rotorua","description":"<p>Nulla pellentesque, sem non consequat mattis, nisl est ullamcorper ipsum, vel mollis elit risus a metus. Praesent ac mauris pulvinar, lobortis justo non, luctus velit.</p><p>Nulla finibus pellentesque scelerisque. Mauris mollis convallis eros a hendrerit. Etiam feugiat, enim eu convallis efficitur.</p><p>Curabitur nisi velit, pellentesque sagittis turpis sed, luctus consectetur neque. Morbi vel tincidunt urna, cursus tincidunt ex.</p>"},
-                {"id":3,"latitude":"-39.272605","longitude":"175.580646","continent":"new_zealand","zoom":8,"color":"color_blue1","image":"./images/tongariro.jpg","date":"2003-07-14","label":"Tongariro","description":"<p>Phasellus commodo porta egestas. Etiam tristique lacus vel sem bibendum, in scelerisque dui dictum. Curabitur sodales odio nec tortor lacinia, id finibus enim venenatis.</p><p>Praesent mollis ullamcorper elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p><p>Nam iaculis blandit erat ultricies eleifend. Curabitur commodo massa vel tempus gravida. Donec justo sem, egestas vel felis at, eleifend rhoncus magna. Suspendisse rutrum vitae risus id elementum. Quisque porta.</p>"},
-                {"id":4,"latitude":"-25.357271","longitude":"131.045707","continent":"australia","zoom":6,"color":"color_red2","image":"./images/uluru.jpg","date":"2014-09-02","label":"Uluru","description":"<p>Donec quis risus fermentum lacus posuere tristique. Proin ornare pharetra aliquam.</p><p>Aenean id elementum turpis. In in magna tincidunt, viverra odio in, tincidunt felis. Vivamus varius urna quis ante efficitur laoreet. Donec euismod cursus risus vitae dictum.</p><p>Aliquam erat volutpat. Nam augue dolor, sagittis eu ligula ac, maximus interdum dolor. Phasellus id hendrerit nisi. Praesent non quam convallis, malesuada elit sed.</p>"}
-            ];
+                key     = 'AIzaSyDj5MYOSGfIzFPC2L6IlX-8T_usSOHwxLI',
+                canvas  = 'map_canvas',
+                markers = [
+
+                    {
+                        'id': 1, 'latitude': -27.484895, 'longitude': 152.959426, 'continent': 'australia',
+                        'zoom': 14, 'color': 'color_red2', 'image': './images/mt_coot.jpg', 'date': '2014-08-25',
+                        'label': 'Mt. Coot-Tha Lookout', 'description': '<p>Nunc quis felis sed nulla scelerisque tempus tincidunt non nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras dapibus nisl sit amet tellus commodo, in ornare lorem sollicitudin. Nam sagittis vitae leo et dictum. Aliquam ac fermentum augue.</p><p>Nulla vitae iaculis turpis. Nunc placerat tincidunt consequat. Fusce malesuada justo quis quam scelerisque, at rutrum nulla varius. Suspendisse malesuada lacinia ex, quis molestie odio euismod quis.</p>'
+                    },
+
+                    {
+                        'id': 2, 'latitude': -27.452788, 'longitude': 153.046353, 'continent': 'australia',
+                        'zoom': 13, 'color': 'color_yellow2', 'image': './images/slick.jpg', 'date': '2014-04-26',
+                        'label': 'Green Beacon Brewing', 'description': '<p>Phasellus id dui vitae est elementum dignissim. Donec sagittis posuere elit at imperdiet. Aliquam non sem enim. Sed vehicula, nulla id facilisis scelerisque, magna magna iaculis libero, quis malesuada quam neque tristique velit. In in mauris malesuada, efficitur lacus et, iaculis diam. Vivamus vitae tincidunt nibh, nec condimentum ante. Nam molestie ipsum sollicitudin ligula tempor feugiat.</p><p>Aliquam id euismod ipsum, vel cursus ligula. Vivamus mollis ante vel sodales vulputate. Phasellus at ex sit amet lacus accumsan porttitor. Fusce eu odio non tellus facilisis pharetra sit amet vitae lorem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi cursus odio vitae risus dignissim pulvinar.</p>'
+                    },
+
+                    {
+                        'id': 3, 'latitude': -41.286607, 'longitude': 174.774892, 'continent': 'new_zealand',
+                        'zoom': 14, 'color': 'color_blue2', 'image': './images/wellington.jpg', 'date': '2015-01-23',
+                        'label': 'Wellington', 'description': '<p>Praesent eleifend enim et dolor gravida, ut euismod lacus rutrum. Pellentesque mi odio, tempor at eros nec, commodo posuere lorem. Ut a dolor aliquet, mollis augue ac, sagittis mi. Etiam tempor lorem arcu, non ornare sem efficitur eget.</p><p>Cras ante turpis, faucibus id maximus non, tincidunt nec libero. Pellentesque eget lobortis augue. Cras vel semper augue, id imperdiet orci. Proin non convallis nibh. Maecenas lobortis tincidunt tristique. Suspendisse id sem quam. Praesent volutpat sollicitudin ipsum sit amet consectetur. Proin sodales massa quis tempor dapibus.</p>'
+                    },
+
+                    {
+                        'id': 4, 'latitude': 39.623791, 'longitude': 19.921335, 'continent': 'europe', 'zoom': 15,
+                        'color': 'color_green1', 'image': './images/corfu.jpg', 'date': '2012-09-27',
+                        'label': 'Corfu', 'description': '<p>Lobortis leo est et lorem. Maecenas ultrices aliquam ante eget dignissim. Vestibulum interdum mollis erat, vel sodales sem dictum laoreet. Aliquam ligula massa, tempor eu risus id, pharetra pretium leo.</p><p>Ut lacinia tempus turpis sit amet consequat. Fusce venenatis purus purus, dictum ultricies libero rhoncus at. Maecenas convallis justo dolor, ac dignissim eros semper quis. Maecenas id vestibulum ante, ut dapibus turpis.</p>'
+                    }
+                ];
 
         gladstone = new Gladstone(key, canvas, markers);
     </script>
@@ -24,7 +47,7 @@
 <body>
 
     <aside id="map_controls" class="map_controls_group noselect">
-        <nav id="map_restore" class="continent_handler continent_part"></nav>
+        <nav id="all_continents" class="continent_handler continent_part"></nav>
         <nav id="map_zoom_in" class="zoom_handler ion-ios-plus-empty"></nav>
         <nav id="map_zoom_out" class="zoom_handler ion-ios-minus-empty"></nav>
     </aside>
