@@ -374,6 +374,11 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
     this._map.boundsActive = null;
 
+    if (this._markers.custom.length === 1) {
+        this._story.previous.style.display = 'none';
+        this._story.next.style.display = 'none';
+    }
+
     var _s = this._story,
         _img = new Image(),
         m = this._markers.custom.filter(function (marker) {
