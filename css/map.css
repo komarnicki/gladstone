@@ -256,6 +256,7 @@ aside#map_continents_controls {
     line-height: 32px;
     float: left;
     position: relative;
+    padding: 0 1px;
 }
 
 .marker_pointer:hover {
