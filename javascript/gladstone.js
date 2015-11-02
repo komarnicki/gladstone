@@ -16,6 +16,7 @@ function Gladstone(key, canvas, markers) {
 
         window._c = function() {
             self.initiate();
+            document.getElementById('all_continents').click();
         };
 
     } catch(e) {
@@ -66,7 +67,7 @@ Gladstone.prototype.initiate = function () {
         };
 
         this.map = new google.maps.Map(this._map.container, this._map.options);
-        this.map.setCenter(new google.maps.LatLng(-27.480515, 153.066031));
+        this.map.setCenter(new google.maps.LatLng(52, 21));
         this.map.setZoom(this._map.options.zoom);
 
         this.setMarkers();
@@ -158,7 +159,6 @@ Gladstone.prototype.setMarkers = function () {
             _h_zm[i].style.display = 'none';
         }
 
-        this.map.setZoom(this._map.options.minZoom);
         return false;
     }
 
@@ -182,8 +182,6 @@ Gladstone.prototype.setMarkers = function () {
             }
 
             self.map.fitBounds(self._map.boundsCollection);
-
-            if (_ml === 1) self.map.setZoom(_m[0].args.zoom);
         }
     };
 
@@ -208,8 +206,6 @@ Gladstone.prototype.setMarkers = function () {
         self._map.boundsActive = null;
     };
 
-    self._map.boundsCollection = new google.maps.LatLngBounds();
-
     for (var i = 0; i < _m.length; i++) {
 
         var _continent = _m[i].continent,
@@ -231,12 +227,7 @@ Gladstone.prototype.setMarkers = function () {
         this._markers.custom.push(
             new _gcm(_continent, _ll, this.map, _args)
         );
-
-        self._map.boundsCollection.extend(_ll);
     }
-
-    self.map.fitBounds(self._map.boundsCollection);
-    self.highlighBounds('map_restore');
 
     google.maps.event.addDomListener(_s.close, 'click', function () {
         self.storyClose();
@@ -283,12 +274,12 @@ Gladstone.prototype.setMarkers = function () {
 
 Gladstone.prototype.filterMarkers = function (continent) {
 
-    if (continent == 'map_restore') {
+    if (continent === 'all_continents') {
         return this._markers.custom;
     }
 
     return this._markers.custom.filter(function (marker) {
-        return marker.continent == continent;
+        return marker.continent === continent;
     });
 };
 
