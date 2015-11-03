@@ -643,11 +643,16 @@ Gladstone.prototype.storyOpen = function (marker_id) {
             self.storyOpen(this.getAttribute('data-dest-id'));
         }, false);
     }
+
+    _s.container.scrollTop = 0;
 };
 
 Gladstone.prototype.storyClose = function () {
 
-    var _s = this._story;
+    var _s = this._story,
+        _rand = document.getElementById('random');
+
+    _rand.innerHTML = '';
 
     _s.container.className = '';
     _s.container.setAttribute('data-previous', '');
