@@ -1,3 +1,18 @@
+/**
+ * Gladstone v0.1
+ * https://github.com/komarnicki/gladstone
+ *
+ * Date 2015-11-03 19:40:45
+ *
+ * With a very few steps, Gladstone gives you a phenomenal ability to put some custom markers across the globe and link
+ * them with dedicated stories. Read each of them, enjoy stunning pictures and finally jump from point to point to
+ * experience great adventure with some unique content.
+ *
+ * @param key
+ * @param canvas
+ * @param markers
+ * @constructor
+ */
 function Gladstone(key, canvas, markers) {
 
     try {
@@ -8,14 +23,38 @@ function Gladstone(key, canvas, markers) {
 
         var self = this;
 
+        /**
+         * Load Google Maps API asynchronously to keep index file as clean as possible.
+         * Once API is loaded, trigger the callback function that's within window scope.
+         *
+         * @private
+         */
         window.onload = function _() {
             var _s = document.createElement('script');
             _s.src = 'https://maps.googleapis.com/maps/api/js?key=' + self.key + '&sensor=false&callback=_c';
             document.body.appendChild(_s);
         };
 
+        /**
+         * This callback is responsible for initiating whole map as well as markers. On this stage we can be sure that
+         * if key is correct, API is fully loaded and "google" object is not undefined and ready to work.
+         *
+         * @private
+         */
         window._c = function() {
+
             self.initiate();
+
+            /**
+             * Once the map is initiated, trigger click event on particular continent control icon.
+             * Each element with class "continent_handler" holds the ID attribute that is assigned to specific bounds.
+             *
+             * Clicking on "continent_handler" with ID equal to "australia" will extend map bounds to show all markers
+             * assigned to this continent.
+             *
+             * ID "all_continents" shows all markers at once. Change below ID name to set default continent or leave it
+             * to see all markers once the map is idle.
+             */
             document.getElementById('all_continents').click();
         };
 
@@ -24,6 +63,10 @@ function Gladstone(key, canvas, markers) {
     }
 }
 
+/**
+ * Method sets essential objects that hold information about the map, markers and related stories.
+ * Finally "setMarkers" method is triggered once the Google Map is instantiated.
+ */
 Gladstone.prototype.initiate = function () {
 
     try {
@@ -70,6 +113,9 @@ Gladstone.prototype.initiate = function () {
         this.map.setCenter(new google.maps.LatLng(52, 21));
         this.map.setZoom(this._map.options.zoom);
 
+        /**
+         * Once the map is loaded, parse input JSON and if valid, create custom markers via Google Maps Overlays.
+         */
         this.setMarkers();
 
     } catch(e) {
@@ -77,6 +123,11 @@ Gladstone.prototype.initiate = function () {
     }
 };
 
+/**
+ * Parse input JSON and create custom markers.
+ *
+ * @returns {boolean}
+ */
 Gladstone.prototype.setMarkers = function () {
 
     function _gcm(continent, latlng, map, args) {
@@ -152,12 +203,24 @@ Gladstone.prototype.setMarkers = function () {
             'description'
         ];
 
+    /**
+     * Validate each marker inside input JSON array.
+     * Discard an item if at least on of required keys is missing.
+     *
+     * @todo
+     * This is just a very basic validation that doesn't protect from seeing "undefined" when particular value
+     * will be empty.
+     */
     for (var i = 0; i < _m.length; i++) {
         for (var _k in _m[i]) {
             if (_v.indexOf(_k) === -1) _m.splice(i, 1);
         }
     }
 
+    /**
+     * If none of input markers survived the validation, then there's no much things to do. Hide all control icons
+     * and exit.
+     */
     if ( ! (_m.length > 0)) {
 
         for (var i = 0; i < _h_cn.length; i++) {
@@ -171,18 +234,42 @@ Gladstone.prototype.setMarkers = function () {
         return false;
     }
 
+    /**
+     * Triggered every time "continent_handler" element is clicked.
+     *
+     * 1) Get the ID attribute to determine destination continent.
+     * 2) Grab just those markers, that are assigned to clicked handler.
+     * 3) Loop through them to extend map bounds so that all markers within will be visible.
+     */
     var listenContinent = function () {
 
         var _ca = this.getAttribute('id'),
             _m = self.filterMarkers(_ca),
             _ml = _m.length;
 
+        /**
+         * There's no point extending bounds of the continent that is active.
+         */
         if (_ml > 0 && self._map.boundsActive !== _ca) {
 
-            self._map.boundsCollection = new google.maps.LatLngBounds();
+            /**
+             * Set clicked handler as active continent and highlight proper icon.
+             * @type {string}
+             */
             self._map.boundsActive = _ca;
-            self.storyClose();
             self.highlighBounds(_ca);
+
+            /**
+             * Close story window (if opened)
+             */
+            self.storyClose();
+
+            /**
+             * Finally start extending the bounds.
+             *
+             * @type {google.maps.LatLngBounds}
+             */
+            self._map.boundsCollection = new google.maps.LatLngBounds();
 
             for (var i = 0; i < _ml; i++) {
                 self._map.boundsCollection.extend(
@@ -194,11 +281,20 @@ Gladstone.prototype.setMarkers = function () {
         }
     };
 
+    /**
+     * Triggered every time "zoom_handler" element is clicked.
+     *
+     * @returns {boolean}
+     */
     var listenZoom = function () {
 
         var _dir = this.getAttribute('id'),
             _z = self.map.getZoom();
 
+        /**
+         * Depending on the zoom direction, increase or decrease map zoom by calling "setZoom" with an integer value
+         * that is between defined min and max value.
+         */
         switch (_dir) {
 
             case 'map_zoom_in':
@@ -212,9 +308,19 @@ Gladstone.prototype.setMarkers = function () {
                 break;
         }
 
+        /**
+         * Once map has been zoomed (in or out) reset active bounds variable so that all continent handlers will be
+         * enabled again.
+         *
+         * @type {null}
+         */
         self._map.boundsActive = null;
     };
 
+    /**
+     * Loop through each marker and create new Gladstone Custom Marker object.
+     * Also push every new object into "_markers.custom" array, so that later it will be easier to reference them.
+     */
     for (var i = 0; i < _m.length; i++) {
 
         var _continent = _m[i].continent,
@@ -238,10 +344,10 @@ Gladstone.prototype.setMarkers = function () {
         );
     }
 
-    google.maps.event.addDomListener(_s.close, 'click', function () {
-        self.storyClose();
-    });
-
+    /**
+     * Listen to some specific clicks and trigger corresponding method id needed.
+     * Below listeners allow you to jump between stories and close the one that is currently opened.
+     */
     google.maps.event.addDomListener(_s.previous, 'click', function () {
         self.storyPrevious();
     });
@@ -250,10 +356,27 @@ Gladstone.prototype.setMarkers = function () {
         self.storyNext();
     });
 
+    google.maps.event.addDomListener(_s.close, 'click', function () {
+        self.storyClose();
+    });
+
+    /**
+     * Home alone can't collide but if we have more than one marker on the map, we should turn on collision detection.
+     * Follow to this method's definition to learn more what it does.
+     */
     if (this._markers.custom.length >= 2) this.detectMarkersCollisions();
 
+    /**
+     * Assign every DOM element with marker created by _gcm to _markers.dom for easier refference.
+     *
+     * @type {NodeList}
+     */
     this._markers.dom = this._map.container.getElementsByClassName('marker');
 
+    /**
+     * Add event listeners for continent and zoom handlers.
+     * Follow to definition of these functions to learn more what they do.
+     */
     for (var i = 0; i < _h_cn.length; i++) {
         _h_cn[i].addEventListener('click', listenContinent, false);
     }
@@ -262,6 +385,11 @@ Gladstone.prototype.setMarkers = function () {
         _h_zm[i].addEventListener('click', listenZoom, false);
     }
 
+    /**
+     * Enable Google Maps "idle" event listener.
+     * Count all markers that are within visible map area. If 0 returned then show a basic hint for the user
+     * for better UX.
+     */
     this.map.addListener('idle', (function () {
 
         this.countVisibleMarkers();
@@ -281,6 +409,13 @@ Gladstone.prototype.setMarkers = function () {
     }.bind(this)));
 };
 
+/**
+ * Narrow down markers array by continent attribute.
+ * Method returns those markers which continent attribute matches the string passed as an argument.
+ *
+ * @param continent
+ * @returns {*}
+ */
 Gladstone.prototype.filterMarkers = function (continent) {
 
     if (continent === 'all_continents') {
@@ -292,6 +427,10 @@ Gladstone.prototype.filterMarkers = function (continent) {
     });
 };
 
+/**
+ * Function shows or hides markers depending on the collision result.
+ * Markers that are in a collision state are disabled and greyed out to not disturb the view.
+ */
 Gladstone.prototype.detectMarkersCollisions = function () {
 
     this.map.addListener('idle', (function () {
@@ -345,11 +484,18 @@ Gladstone.prototype.detectMarkersCollisions = function () {
             }
         };
 
-        if (this._markers.dom.length > 1) _run();
+        /**
+         * Just one marker on the map? Easy - no collisions.
+         */
+        if (this._markers.dom.length >= 2) _run();
 
     }.bind(this)));
 };
 
+/**
+ * Method counts how many markers are within existing bounds.
+ * Result is assigned to _markers.visible for easier reference later.
+ */
 Gladstone.prototype.countVisibleMarkers = function () {
 
     var bounds = this.map.getBounds();
@@ -363,6 +509,11 @@ Gladstone.prototype.countVisibleMarkers = function () {
     this._markers.visible = c;
 };
 
+/**
+ * Method highlight proper continent_handler icon and as well as sets _map.boundsActive variable.
+ *
+ * @param continent_id
+ */
 Gladstone.prototype.highlighBounds = function (continent_id) {
 
     var _h_cn = document.getElementsByClassName('continent_handler');
