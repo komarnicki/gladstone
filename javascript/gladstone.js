@@ -603,7 +603,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
             _tc_h = document.createElement('h4'),
             _tc_c = document.createElement('div');
 
-        if (_rand_m_id == marker_id) continue;
+        if (_rand_m_id == marker_id) continue; // Exclude currently opened marker
 
         _ti.setAttribute('data-dest-id', _rand_m_id);
         _ti.className = 'random_story random_story_tile_image';

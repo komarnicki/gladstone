@@ -204,7 +204,6 @@ aside#map_continents_controls {
 
 #random {
     overflow: auto;
-    background-color: #ffffff;
 }
 
 #random .random_story {
@@ -341,58 +340,69 @@ aside#map_continents_controls {
     filter: grayscale(100%) brightness(150%);
 }
 
-#story.color_red1,
 .marker.color_red1,
+#story.color_red1 > header,
+#story.color_red1 > #content > #story_content,
 .random_story.color_red1 { border-color: #f05456; background-color: #f05456; color: #ffffff; }
 .marker_pointer.color_red1 { color: #f05456; }
 
-#story.color_red2,
 .marker.color_red2,
+#story.color_red2 > header,
+#story.color_red2 > #content > #story_content,
 .random_story.color_red2 { border-color: #d52e30; background-color: #d52e30; color: #ffffff; }
 .marker_pointer.color_red2 { color: #d52e30; }
 
-#story.color_yellow1,
 .marker.color_yellow1,
+#story.color_yellow1 > header,
+#story.color_yellow1 > #content > #story_content,
 .random_story.color_yellow1 { border-color: #ffcc00; background-color: #ffcc00; color: #000000; }
 .marker_pointer.color_yellow1 { color: #ffcc00; }
 
-#story.color_yellow2,
 .marker.color_yellow2,
+#story.color_yellow2 > header,
+#story.color_yellow2 > #content > #story_content,
 .random_story.color_yellow2 { border-color: #f5b417; background-color: #f5b417; color: #000000; }
 .marker_pointer.color_yellow2 { color: #f5b417; }
 
-#story.color_green1,
 .marker.color_green1,
+#story.color_green1 > header,
+#story.color_green1 > #content > #story_content,
 .random_story.color_green1 { border-color: #43a735; background-color: #43a735; color: #ffffff; }
 .marker_pointer.color_green1 { color: #43a735; }
 
-#story.color_green2,
 .marker.color_green2,
+#story.color_green2 > header,
+#story.color_green2 > #content > #story_content,
 .random_story.color_green2 { border-color: #2eb851; background-color: #2eb851; color: #ffffff; }
 .marker_pointer.color_green2 { color: #2eb851; }
 
-#story.color_blue1,
 .marker.color_blue1,
+#story.color_blue1 > header,
+#story.color_blue1 > #content > #story_content,
 .random_story.color_blue1 { border-color: #3e4ea1; background-color: #3e4ea1; color: #ffffff; }
 .marker_pointer.color_blue1 { color: #3e4ea1; }
 
-#story.color_blue2,
 .marker.color_blue2,
+#story.color_blue2 > header,
+#story.color_blue2 > #content > #story_content,
 .random_story.color_blue2 { border-color: #08589d; background-color: #08589d; color: #ffffff; }
 .marker_pointer.color_blue2 { color: #08589d; }
 
-#story.color_blue3,
 .marker.color_blue3,
+#story.color_blue3 > header,
+#story.color_blue3 > #content > #story_content,
 .random_story.color_blue3 { border-color: #577ec0; background-color: #577ec0; color: #ffffff; }
 .marker_pointer.color_blue3 { color: #577ec0; }
 
-#story.color_pink1,
 .marker.color_pink1,
+#story.color_pink1 > header,
+#story.color_pink1 > #content > #story_content,
 .random_story.color_pink1 { border-color: #e93375; background-color: #e93375; color: #ffffff; }
 .marker_pointer.color_pink1 { color: #e93375; }
 
-#story.color_violet1,
 .marker.color_violet1,
+#story.color_violet1 > header,
+#story.color_violet1 > #content > #story_content,
 .random_story.color_violet1 { border-color: #904098; background-color: #904098; color: #ffffff; }
 .marker_pointer.color_violet1 { color: #904098; }
 
