@@ -584,6 +584,65 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     _s.title.innerHTML = m[0].args.label;
     _s.date.innerHTML = m[0].args.date;
     _s.content.innerHTML = m[0].args.description;
+
+    var _rand = document.getElementById('random'),
+        _rand_w = _s.container.offsetWidth,
+        _t_dim = _rand_w / 3;
+
+    _rand.style.width = _rand_w + 'px';
+    _rand.innerHTML = '';
+
+    for (var i = 0; i < this._markers.custom.length; i++) {
+
+        var _rand_m_id = i + 1,
+            _m = this._markers.custom[i],
+            _ti = document.createElement('div'),
+            _ti_inner = document.createElement('div'),
+            _ti_locat = document.createElement('h5'),
+            _tc = document.createElement('div'),
+            _tc_h = document.createElement('h4'),
+            _tc_c = document.createElement('div');
+
+        if (_rand_m_id == marker_id) continue;
+
+        _ti.setAttribute('data-dest-id', _rand_m_id);
+        _ti.className = 'random_story random_story_tile_image';
+        _ti.style.width = _t_dim + 'px';
+        _ti.style.height = _t_dim + 'px';
+
+        _ti_inner.style.backgroundImage = 'url(' + _m.args.image + ')';
+        _ti.appendChild(_ti_inner);
+
+        _ti_locat.className = 'location';
+        _ti_locat.innerHTML = _m.args.label;
+        _ti_inner.appendChild(_ti_locat);
+
+        _tc.setAttribute('data-dest-id', _rand_m_id);
+        _tc.className = 'random_story random_story_tile_content ' + _m.args.color;
+        _tc.style.width = _t_dim + 'px';
+        _tc.style.height = _t_dim + 'px';
+
+        _tc_h.className = 'title';
+        _tc_h.innerHTML = _m.args.label;
+        _tc.appendChild(_tc_h);
+
+        _tc_c.className = 'content';
+        _tc_c.innerHTML = _m.args.description.substring(0, 100) + '…';
+        _tc.appendChild(_tc_c);
+
+        _rand.appendChild(_ti);
+        _rand.appendChild(_tc);
+
+        var self = this;
+
+        _ti.addEventListener('click', function() {
+            self.storyOpen(this.getAttribute('data-dest-id'));
+        }, false);
+
+        _tc.addEventListener('click', function() {
+            self.storyOpen(this.getAttribute('data-dest-id'));
+        }, false);
+    }
 };
 
 Gladstone.prototype.storyClose = function () {
