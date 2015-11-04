@@ -204,6 +204,7 @@ aside#map_continents_controls {
 
 #random {
     overflow: auto;
+    background-color: rgba(0,0,0,0.125);
 }
 
 #random .random_story {

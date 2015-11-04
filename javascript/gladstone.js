@@ -36,13 +36,15 @@ function Gladstone(key, canvas, markers) {
         };
 
         /**
-         * This callback is responsible for initiating whole map as well as markers. On this stage we can be sure that
-         * if key is correct, API is fully loaded and "google" object is not undefined and ready to work.
+         * This callback is responsible for initiating whole map as well as setting up HTML markup and markers.
+         * On this stage we can be sure that if key is correct, API is fully loaded and "google" object is not undefined
+         * and ready to work.
          *
          * @private
          */
         window._c = function() {
 
+            self.setMarkup();
             self.initiate();
 
             /**
@@ -176,11 +178,13 @@ Gladstone.prototype.setMarkers = function () {
             panes.overlayImage.appendChild(div);
         }
 
-        var point = this.getProjection().fromLatLngToDivPixel(this.latlng);
+        var point = this.getProjection().fromLatLngToDivPixel(this.latlng),
+            offsetLeft = 5,
+            offsetTop = 20;
 
         if (point) {
-            div.style.left = (point.x - 10) + 'px';
-            div.style.top = (point.y - 10) + 'px';
+            div.style.left = (point.x - offsetLeft) + 'px';
+            div.style.top = (point.y - offsetTop) + 'px';
         }
     };
 
@@ -686,4 +690,121 @@ Gladstone.prototype.storyNext = function () {
 
     var _dest = this._story.container.getAttribute('data-next');
     this.storyOpen(_dest);
+};
+
+Gladstone.prototype.setMarkup = function () {
+
+    var _tpl_map_controls = document.createElement('aside'),
+        _tpl_map_controls_all_continents = document.createElement('nav'),
+        _tpl_map_controls_map_zoom_in = document.createElement('nav'),
+        _tpl_map_controls_map_zoom_out = document.createElement('nav'),
+        _tpl_marker_assist = document.createElement('aside'),
+        _tpl_map_continents_controls = document.createElement('aside'),
+        _tpl_continent_europe = document.createElement('nav'),
+        _tpl_continent_australia = document.createElement('nav'),
+        _tpl_continent_new_zealand = document.createElement('nav'),
+        _tpl_story_wrapper = document.createElement('div'),
+        _tpl_story = document.createElement('article'),
+        _tpl_story_header_wrapper = document.createElement('header'),
+        _tpl_story_close = document.createElement('nav'),
+        _tpl_story_previous = document.createElement('nav'),
+        _tpl_story_next = document.createElement('nav'),
+        _tpl_story_header = document.createElement('div'),
+        _tpl_story_content_wrapper = document.createElement('div'),
+        _tpl_story_image = document.createElement('div'),
+        _tpl_story_content = document.createElement('div'),
+        _tpl_story_title = document.createElement('h1'),
+        _tpl_story_date = document.createElement('div'),
+        _tpl_story_position = document.createElement('div'),
+        _tpl_story_content_inject = document.createElement('div'),
+        _tpl_random = document.createElement('div');
+
+    _tpl_map_controls.setAttribute('id', 'map_controls');
+    _tpl_map_controls.className = 'map_controls_group noselect';
+
+    _tpl_map_controls_all_continents.setAttribute('id', 'all_continents');
+    _tpl_map_controls_all_continents.className = 'continent_handler continent_part';
+
+    _tpl_map_controls_map_zoom_in.setAttribute('id', 'map_zoom_in');
+    _tpl_map_controls_map_zoom_in.className = 'zoom_handler ion-ios-plus-empty';
+
+    _tpl_map_controls_map_zoom_out.setAttribute('id', 'map_zoom_out');
+    _tpl_map_controls_map_zoom_out.className = 'zoom_handler ion-ios-minus-empty';
+
+    _tpl_map_controls.appendChild(_tpl_map_controls_all_continents);
+    _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_in);
+    _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_out);
+
+    _tpl_marker_assist.setAttribute('id', 'marker_assist');
+    _tpl_marker_assist.className = 'noselect';
+    _tpl_marker_assist.innerHTML = '<p id="arrow"></p><p class="hand">Did you get lost? Click here!</p>';
+
+    _tpl_map_continents_controls.setAttribute('id', 'map_continents_controls');
+    _tpl_map_continents_controls.className = 'map_controls_group noselect';
+
+    _tpl_continent_europe.setAttribute('id', 'europe');
+    _tpl_continent_europe.className = 'continent_handler continent_part';
+
+    _tpl_continent_australia.setAttribute('id', 'australia');
+    _tpl_continent_australia.className = 'continent_handler continent_part';
+
+    _tpl_continent_new_zealand.setAttribute('id', 'new_zealand');
+    _tpl_continent_new_zealand.className = 'continent_handler continent_part';
+
+    _tpl_map_continents_controls.appendChild(_tpl_continent_europe);
+    _tpl_map_continents_controls.appendChild(_tpl_continent_australia);
+    _tpl_map_continents_controls.appendChild(_tpl_continent_new_zealand);
+
+    _tpl_story_wrapper.setAttribute('id', 'story_wrapper');
+    _tpl_story.setAttribute('id', 'story');
+    _tpl_story_header_wrapper.className = 'noselect';
+
+    _tpl_story_close.setAttribute('id', 'story_close');
+    _tpl_story_close.className = 'ion-ios-close-empty';
+
+    _tpl_story_previous.setAttribute('id', 'story_previous');
+    _tpl_story_previous.className = 'ion-ios-arrow-thin-left';
+
+    _tpl_story_next.setAttribute('id', 'story_next');
+    _tpl_story_next.className = 'ion-ios-arrow-thin-right';
+
+    _tpl_story_header.setAttribute('id', 'story_header');
+
+    _tpl_story_wrapper.appendChild(_tpl_story);
+    _tpl_story.appendChild(_tpl_story_header_wrapper);
+
+    _tpl_story_header_wrapper.appendChild(_tpl_story_close);
+    _tpl_story_header_wrapper.appendChild(_tpl_story_previous);
+    _tpl_story_header_wrapper.appendChild(_tpl_story_next);
+    _tpl_story_header_wrapper.appendChild(_tpl_story_header);
+
+    _tpl_story_content_wrapper.setAttribute('id', 'content');
+    _tpl_story_content_wrapper.className = 'noselect';
+    _tpl_story.appendChild(_tpl_story_content_wrapper);
+
+    _tpl_story_image.setAttribute('id', 'story_image');
+    _tpl_story_content_wrapper.appendChild(_tpl_story_image);
+
+    _tpl_story_content.setAttribute('id', 'story_content');
+    _tpl_story_content_wrapper.appendChild(_tpl_story_content);
+
+    _tpl_story_title.setAttribute('id', 'story_title');
+    _tpl_story_content.appendChild(_tpl_story_title);
+
+    _tpl_story_date.setAttribute('id', 'story_date');
+    _tpl_story_content.appendChild(_tpl_story_date);
+
+    _tpl_story_position.setAttribute('id', 'story_position');
+    _tpl_story_content.appendChild(_tpl_story_position);
+
+    _tpl_story_content_inject.setAttribute('id', 'story_content_inject');
+    _tpl_story_content.appendChild(_tpl_story_content_inject);
+
+    _tpl_random.setAttribute('id', 'random');
+    _tpl_story_content_wrapper.appendChild(_tpl_random);
+
+    document.body.appendChild(_tpl_map_controls);
+    document.body.appendChild(_tpl_marker_assist);
+    document.body.appendChild(_tpl_map_continents_controls);
+    document.body.appendChild(_tpl_story_wrapper);
 };
