@@ -159,7 +159,7 @@ Gladstone.prototype.setMarkers = function () {
             // Pointer
             var pointer = document.createElement('span');
             pointer.id = 'marker_pointer_' + self.args.marker_id;
-            pointer.className = 'noselect marker_pointer ion-location ' + self.args.color;
+            pointer.className = 'noselect marker_pointer marker_icon ' + self.args.color;
 
             // Label
             var label = document.createElement('span');
@@ -724,12 +724,8 @@ Gladstone.prototype.setMarkup = function () {
 
     _tpl_map_controls_all_continents.setAttribute('id', 'all_continents');
     _tpl_map_controls_all_continents.className = 'continent_handler continent_part';
-
     _tpl_map_controls_map_zoom_in.setAttribute('id', 'map_zoom_in');
-    _tpl_map_controls_map_zoom_in.className = 'zoom_handler ion-ios-plus-empty';
-
     _tpl_map_controls_map_zoom_out.setAttribute('id', 'map_zoom_out');
-    _tpl_map_controls_map_zoom_out.className = 'zoom_handler ion-ios-minus-empty';
 
     _tpl_map_controls.appendChild(_tpl_map_controls_all_continents);
     _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_in);
@@ -760,14 +756,8 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_header_wrapper.className = 'noselect';
 
     _tpl_story_close.setAttribute('id', 'story_close');
-    _tpl_story_close.className = 'ion-ios-close-empty';
-
     _tpl_story_previous.setAttribute('id', 'story_previous');
-    _tpl_story_previous.className = 'ion-ios-arrow-thin-left';
-
     _tpl_story_next.setAttribute('id', 'story_next');
-    _tpl_story_next.className = 'ion-ios-arrow-thin-right';
-
     _tpl_story_header.setAttribute('id', 'story_header');
 
     _tpl_story_wrapper.appendChild(_tpl_story);
