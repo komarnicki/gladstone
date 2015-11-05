@@ -725,7 +725,9 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_map_controls_all_continents.setAttribute('id', 'all_continents');
     _tpl_map_controls_all_continents.className = 'continent_handler continent_part';
     _tpl_map_controls_map_zoom_in.setAttribute('id', 'map_zoom_in');
+    _tpl_map_controls_map_zoom_in.className = 'zoom_handler';
     _tpl_map_controls_map_zoom_out.setAttribute('id', 'map_zoom_out');
+    _tpl_map_controls_map_zoom_out.className = 'zoom_handler';
 
     _tpl_map_controls.appendChild(_tpl_map_controls_all_continents);
     _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_in);
