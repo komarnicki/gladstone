@@ -204,6 +204,7 @@ Gladstone.prototype.setMarkers = function () {
             'color',
             'image',
             'date',
+            'position',
             'subTitle',
             'label',
             'description'
@@ -340,6 +341,7 @@ Gladstone.prototype.setMarkers = function () {
                 'color': _m[i].color,
                 'image': _m[i].image,
                 'date': _m[i].date,
+                'position': _m[i].position,
                 'subTitle': _m[i].subTitle,
                 'label': _m[i].label,
                 'zoom': _m[i].zoom,
@@ -590,6 +592,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
     _s.title.innerHTML = m[0].args.label;
     _s.date.innerHTML = m[0].args.date;
+    _s.position.innerHTML = m[0].args.position;
     _s.content.innerHTML = m[0].args.description;
 
     var _rand = document.getElementById('random'),
@@ -669,6 +672,7 @@ Gladstone.prototype.storyClose = function () {
     _s.image.style.height = '';
     _s.title.innerHTML = '';
     _s.date.innerHTML = '';
+    _s.position.innerHTML = '';
     _s.content.innerHTML = '';
 
     if (this._markers.active !== null) {
