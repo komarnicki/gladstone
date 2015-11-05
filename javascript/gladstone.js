@@ -100,14 +100,14 @@ Gladstone.prototype.initiate = function () {
         };
 
         this._story = {
-            'container': document.getElementById('story'),
+            'article': document.getElementById('story_article'),
             'close': document.getElementById('story_close'),
             'previous': document.getElementById('story_previous'),
             'next': document.getElementById('story_next'),
-            'header': document.getElementById('story_header'),
             'image': document.getElementById('story_image'),
             'title': document.getElementById('story_title'),
             'date': document.getElementById('story_date'),
+            'position': document.getElementById('story_position'),
             'content': document.getElementById('story_content_inject')
         };
 
@@ -143,48 +143,48 @@ Gladstone.prototype.setMarkers = function () {
 
     _gcm.prototype.draw = function () {
 
-        var self = this;
-        var div = this.div;
+        var self = this,
+            _m = this.div;
 
-        if ( ! div) {
+        if ( ! _m) {
 
             // Marker's wrapper
-            div = this.div = document.createElement('div');
-            div.id = 'marker_' + self.args.marker_id;
-            div.className = 'noselect marker ' + self.args.color;
-            div.dataset.id = self.args.marker_id;
-            div.dataset.previous_id = self.args.marker_previous_id;
-            div.dataset.next_id = self.args.marker_next_id;
+            _m = this.div = document.createElement('div');
+            _m.id = 'marker_' + self.args.marker_id;
+            _m.className = 'marker ' + self.args.color + ' noselect';
+            _m.dataset.id = self.args.marker_id;
+            _m.dataset.previous_id = self.args.marker_previous_id;
+            _m.dataset.next_id = self.args.marker_next_id;
 
             // Pointer
-            var pointer = document.createElement('span');
-            pointer.id = 'marker_pointer_' + self.args.marker_id;
-            pointer.className = 'noselect marker_pointer marker_icon ' + self.args.color;
+            var _p = document.createElement('span');
+            _p.id = 'marker_pointer_' + self.args.marker_id;
+            _p.className = 'marker_pointer';
 
             // Label
-            var label = document.createElement('span');
-            label.id = 'marker_label_' + self.args.marker_id;
-            label.className = 'noselect marker_label';
-            label.innerHTML = self.args.label;
+            var _l = document.createElement('span');
+            _l.id = 'marker_label_' + self.args.marker_id;
+            _l.className = 'marker_label';
+            _l.innerHTML = self.args.label;
 
-            div.appendChild(pointer);
-            div.appendChild(label);
+            _m.appendChild(_p);
+            _m.appendChild(_l);
 
-            google.maps.event.addDomListener(div, 'click', function () {
+            google.maps.event.addDomListener(_m, 'click', function () {
                 gladstone.storyOpen(this.getAttribute('data-id'));
             });
 
             var panes = this.getPanes();
-            panes.overlayImage.appendChild(div);
+            panes.overlayImage.appendChild(_m);
         }
 
-        var point = this.getProjection().fromLatLngToDivPixel(this.latlng),
+        var _point = this.getProjection().fromLatLngToDivPixel(this.latlng),
             offsetLeft = 5,
             offsetTop = 20;
 
-        if (point) {
-            div.style.left = (point.x - offsetLeft) + 'px';
-            div.style.top = (point.y - offsetTop) + 'px';
+        if (_point) {
+            _m.style.left = (_point.x - offsetLeft) + 'px';
+            _m.style.top = (_point.y - offsetTop) + 'px';
         }
     };
 
@@ -443,24 +443,24 @@ Gladstone.prototype.detectMarkersCollisions = function () {
 
         var _run = function () {
 
-            var sensitivity = 2;
-            var markers = [];
-            var markersDom = self._markers.dom;
-            var markersDomLength = markersDom.length;
-            var width = 200 + sensitivity;
-            var height = 18 + sensitivity;
-            var x1, y1;
-            var s1, s2;
+            var sensitivity = 2,
+                markers = [],
+                markersDom = self._markers.dom,
+                markersDomLength = markersDom.length,
+                width = 200 + sensitivity,
+                height = 18 + sensitivity,
+                x1, y1,
+                s1, s2;
 
             for (var i = 0; i < markersDomLength; i++) {
 
-                var div = markersDom[i];
+                var _m_dom = markersDom[i];
 
                 markers.push({
-                    square: div,
+                    marker: _m_dom,
                     garbage: false,
-                    x: x1 = Number(div.offsetLeft),
-                    y: y1 = Number(div.offsetTop),
+                    x: x1 = Number(_m_dom.offsetLeft),
+                    y: y1 = Number(_m_dom.offsetTop),
                     b: y1 + height,
                     r: x1 + width
                 });
@@ -478,10 +478,10 @@ Gladstone.prototype.detectMarkersCollisions = function () {
                         s2 = markers[j];
 
                         if (s1.x > s2.r || s1.y > s2.b || s1.r < s2.x || s1.b < s2.y) {
-                            s2.square.classList.remove('collides');
+                            s2.marker.classList.remove('collides');
                         } else {
                             s2.garbage = true;
-                            s2.square.classList.add('collides');
+                            s2.marker.classList.add('collides');
                         }
                     }
                 }
@@ -502,15 +502,15 @@ Gladstone.prototype.detectMarkersCollisions = function () {
  */
 Gladstone.prototype.countVisibleMarkers = function () {
 
-    var bounds = this.map.getBounds();
-    var m = this._markers.custom;
-    var c = 0;
+    var _b = this.map.getBounds(),
+        _m = this._markers.custom,
+        _c = 0;
 
-    for (var i = 0; i < m.length; i++) {
-        if (bounds.contains(new google.maps.LatLng(m[i].latlng.lat(), m[i].latlng.lng()))) c++;
+    for (var i = 0; i < _m.length; i++) {
+        if (_b.contains(new google.maps.LatLng(_m[i].latlng.lat(), _m[i].latlng.lng()))) _c++;
     }
 
-    this._markers.visible = c;
+    this._markers.visible = _c;
 };
 
 /**
@@ -549,10 +549,10 @@ Gladstone.prototype.storyOpen = function (marker_id) {
         return marker.args.marker_id == marker_id;
     });
 
-    if (_s.container.classList.contains('opened') === true &&
-        _s.container.getAttribute('data-current') == m[0].args.marker_id) return false;
+    if (_s.article.classList.contains('opened') === true &&
+        _s.article.getAttribute('data-current') == m[0].args.marker_id) return false;
 
-    if (_s.container.getAttribute('data-current') != m[0].args.marker_id) {
+    if (_s.article.getAttribute('data-current') != m[0].args.marker_id) {
         this.storyClose();
     }
 
@@ -566,13 +566,13 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     this._markers.active = document.getElementById('marker_' + marker_id);
     this._markers.active.classList.add('active');
 
-    _s.container.className = '';
-    _s.container.classList.add('opened');
-    _s.container.classList.add(m[0].args.color);
-    _s.container.setAttribute('data-previous', m[0].args.marker_previous_id);
-    _s.container.setAttribute('data-current', m[0].args.marker_id);
-    _s.container.setAttribute('data-next', m[0].args.marker_next_id);
-    _s.header.innerHTML = m[0].args.label;
+    _s.article.className = '';
+    _s.article.classList.add('opened');
+    _s.article.classList.add(m[0].args.color);
+    _s.article.setAttribute('data-previous', m[0].args.marker_previous_id);
+    _s.article.setAttribute('data-current', m[0].args.marker_id);
+    _s.article.setAttribute('data-next', m[0].args.marker_next_id);
+    //_s.header.innerHTML = m[0].args.label;
 
     _img.onload = function () {
 
@@ -590,7 +590,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     _s.content.innerHTML = m[0].args.description;
 
     var _rand = document.getElementById('random'),
-        _rand_w = _s.container.offsetWidth,
+        _rand_w = _s.article.offsetWidth,
         _t_dim = _rand_w / 3;
 
     _rand.style.width = _rand_w + 'px';
@@ -648,7 +648,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
         }, false);
     }
 
-    _s.container.scrollTop = 0;
+    _s.article.scrollTop = 0;
 };
 
 Gladstone.prototype.storyClose = function () {
@@ -657,12 +657,10 @@ Gladstone.prototype.storyClose = function () {
         _rand = document.getElementById('random');
 
     _rand.innerHTML = '';
-
-    _s.container.className = '';
-    _s.container.setAttribute('data-previous', '');
-    _s.container.setAttribute('data-current', '');
-    _s.container.setAttribute('data-next', '');
-    _s.header.innerHTML = '';
+    _s.article.className = '';
+    _s.article.setAttribute('data-previous', '');
+    _s.article.setAttribute('data-current', '');
+    _s.article.setAttribute('data-next', '');
     _s.image.style.backgroundImage = '';
     _s.image.style.height = '';
     _s.title.innerHTML = '';
@@ -682,121 +680,117 @@ Gladstone.prototype.storyClose = function () {
 
 Gladstone.prototype.storyPrevious = function () {
 
-    var _dest = this._story.container.getAttribute('data-previous');
+    var _dest = this._story.article.getAttribute('data-previous');
     this.storyOpen(_dest);
 };
 
 Gladstone.prototype.storyNext = function () {
 
-    var _dest = this._story.container.getAttribute('data-next');
+    var _dest = this._story.article.getAttribute('data-next');
     this.storyOpen(_dest);
 };
 
 Gladstone.prototype.setMarkup = function () {
 
+    /**
+     * Definitions
+     *
+     * @type {Element}
+     * @private
+     */
     var _tpl_map_controls = document.createElement('aside'),
         _tpl_map_controls_all_continents = document.createElement('nav'),
         _tpl_map_controls_map_zoom_in = document.createElement('nav'),
         _tpl_map_controls_map_zoom_out = document.createElement('nav'),
         _tpl_marker_assist = document.createElement('aside'),
-        _tpl_map_continents_controls = document.createElement('aside'),
+        _tpl_map_controls_continents = document.createElement('aside'),
         _tpl_continent_europe = document.createElement('nav'),
         _tpl_continent_australia = document.createElement('nav'),
         _tpl_continent_new_zealand = document.createElement('nav'),
-        _tpl_story_wrapper = document.createElement('div'),
-        _tpl_story = document.createElement('article'),
-        _tpl_story_header_wrapper = document.createElement('header'),
+        _tpl_story_article = document.createElement('article'),
+        _tpl_story_header = document.createElement('header'),
         _tpl_story_close = document.createElement('nav'),
         _tpl_story_previous = document.createElement('nav'),
         _tpl_story_next = document.createElement('nav'),
-        _tpl_story_header = document.createElement('div'),
-        _tpl_story_content_wrapper = document.createElement('div'),
-        _tpl_story_image = document.createElement('div'),
-        _tpl_story_content = document.createElement('div'),
+        _tpl_story_main = document.createElement('main'),
+        _tpl_story_image = document.createElement('figure'),
         _tpl_story_title = document.createElement('h1'),
         _tpl_story_date = document.createElement('div'),
         _tpl_story_position = document.createElement('div'),
         _tpl_story_content_inject = document.createElement('div'),
         _tpl_random = document.createElement('div');
 
-    _tpl_map_controls.setAttribute('id', 'map_controls');
-    _tpl_map_controls.className = 'map_controls_group noselect';
-
-    _tpl_map_controls_all_continents.setAttribute('id', 'all_continents');
+    /**
+     * Setters
+     *
+     * @type {string}
+     */
+    _tpl_map_controls.id = 'map_controls';
+    _tpl_map_controls.className = 'map_controls_group';
+    _tpl_map_controls_all_continents.id = 'all_continents';
     _tpl_map_controls_all_continents.className = 'continent_handler continent_part';
-    _tpl_map_controls_map_zoom_in.setAttribute('id', 'map_zoom_in');
+    _tpl_map_controls_map_zoom_in.id = 'map_zoom_in';
     _tpl_map_controls_map_zoom_in.className = 'zoom_handler';
-    _tpl_map_controls_map_zoom_out.setAttribute('id', 'map_zoom_out');
+    _tpl_map_controls_map_zoom_out.id = 'map_zoom_out';
     _tpl_map_controls_map_zoom_out.className = 'zoom_handler';
+
+    _tpl_marker_assist.id = 'marker_assist';
+    _tpl_marker_assist.className = 'noselect';
+    _tpl_marker_assist.innerHTML = '<p id="arrow"></p><p class="hand">Did you get lost? Click here!</p>';
+
+    _tpl_map_controls_continents.id = 'map_continents_controls';
+    _tpl_map_controls_continents.className = 'map_controls_group noselect';
+    _tpl_continent_europe.id = 'europe';
+    _tpl_continent_europe.className = 'continent_handler continent_part';
+    _tpl_continent_australia.id = 'australia';
+    _tpl_continent_australia.className = 'continent_handler continent_part';
+    _tpl_continent_new_zealand.id = 'new_zealand';
+    _tpl_continent_new_zealand.className = 'continent_handler continent_part';
+
+    _tpl_story_article.id = 'story_article';
+    _tpl_story_header.id = 'story_header';
+    _tpl_story_close.id = 'story_close';
+    _tpl_story_previous.id = 'story_previous';
+    _tpl_story_next.id = 'story_next';
+    _tpl_story_main.id = 'story_main';
+    _tpl_story_image.id = 'story_image';
+    _tpl_story_title.id = 'story_title';
+    _tpl_story_title.className = 'noselect';
+    _tpl_story_date.id = 'story_date';
+    _tpl_story_date.className = 'noselect';
+    _tpl_story_position.id = 'story_position';
+    _tpl_story_content_inject.id = 'story_content_inject';
+    _tpl_story_content_inject.className = 'noselect';
+    _tpl_random.id = 'random';
+    _tpl_random.className = 'noselect';
+
+    /**
+     * Builders
+     */
+    document.body.appendChild(_tpl_map_controls);
+    document.body.appendChild(_tpl_marker_assist);
+    document.body.appendChild(_tpl_map_controls_continents);
+    document.body.appendChild(_tpl_story_article);
 
     _tpl_map_controls.appendChild(_tpl_map_controls_all_continents);
     _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_in);
     _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_out);
 
-    _tpl_marker_assist.setAttribute('id', 'marker_assist');
-    _tpl_marker_assist.className = 'noselect';
-    _tpl_marker_assist.innerHTML = '<p id="arrow"></p><p class="hand">Did you get lost? Click here!</p>';
+    _tpl_map_controls_continents.appendChild(_tpl_continent_europe);
+    _tpl_map_controls_continents.appendChild(_tpl_continent_australia);
+    _tpl_map_controls_continents.appendChild(_tpl_continent_new_zealand);
 
-    _tpl_map_continents_controls.setAttribute('id', 'map_continents_controls');
-    _tpl_map_continents_controls.className = 'map_controls_group noselect';
+    _tpl_story_article.appendChild(_tpl_story_header);
+    _tpl_story_article.appendChild(_tpl_story_main);
+    _tpl_story_article.appendChild(_tpl_random);
 
-    _tpl_continent_europe.setAttribute('id', 'europe');
-    _tpl_continent_europe.className = 'continent_handler continent_part';
+    _tpl_story_header.appendChild(_tpl_story_close);
+    _tpl_story_header.appendChild(_tpl_story_previous);
+    _tpl_story_header.appendChild(_tpl_story_next);
 
-    _tpl_continent_australia.setAttribute('id', 'australia');
-    _tpl_continent_australia.className = 'continent_handler continent_part';
-
-    _tpl_continent_new_zealand.setAttribute('id', 'new_zealand');
-    _tpl_continent_new_zealand.className = 'continent_handler continent_part';
-
-    _tpl_map_continents_controls.appendChild(_tpl_continent_europe);
-    _tpl_map_continents_controls.appendChild(_tpl_continent_australia);
-    _tpl_map_continents_controls.appendChild(_tpl_continent_new_zealand);
-
-    _tpl_story_wrapper.setAttribute('id', 'story_wrapper');
-    _tpl_story.setAttribute('id', 'story');
-    _tpl_story_header_wrapper.className = 'noselect';
-
-    _tpl_story_close.setAttribute('id', 'story_close');
-    _tpl_story_previous.setAttribute('id', 'story_previous');
-    _tpl_story_next.setAttribute('id', 'story_next');
-    _tpl_story_header.setAttribute('id', 'story_header');
-
-    _tpl_story_wrapper.appendChild(_tpl_story);
-    _tpl_story.appendChild(_tpl_story_header_wrapper);
-
-    _tpl_story_header_wrapper.appendChild(_tpl_story_close);
-    _tpl_story_header_wrapper.appendChild(_tpl_story_previous);
-    _tpl_story_header_wrapper.appendChild(_tpl_story_next);
-    _tpl_story_header_wrapper.appendChild(_tpl_story_header);
-
-    _tpl_story_content_wrapper.setAttribute('id', 'content');
-    _tpl_story_content_wrapper.className = 'noselect';
-    _tpl_story.appendChild(_tpl_story_content_wrapper);
-
-    _tpl_story_image.setAttribute('id', 'story_image');
-    _tpl_story_content_wrapper.appendChild(_tpl_story_image);
-
-    _tpl_story_content.setAttribute('id', 'story_content');
-    _tpl_story_content_wrapper.appendChild(_tpl_story_content);
-
-    _tpl_story_title.setAttribute('id', 'story_title');
-    _tpl_story_content.appendChild(_tpl_story_title);
-
-    _tpl_story_date.setAttribute('id', 'story_date');
-    _tpl_story_content.appendChild(_tpl_story_date);
-
-    _tpl_story_position.setAttribute('id', 'story_position');
-    _tpl_story_content.appendChild(_tpl_story_position);
-
-    _tpl_story_content_inject.setAttribute('id', 'story_content_inject');
-    _tpl_story_content.appendChild(_tpl_story_content_inject);
-
-    _tpl_random.setAttribute('id', 'random');
-    _tpl_story_content_wrapper.appendChild(_tpl_random);
-
-    document.body.appendChild(_tpl_map_controls);
-    document.body.appendChild(_tpl_marker_assist);
-    document.body.appendChild(_tpl_map_continents_controls);
-    document.body.appendChild(_tpl_story_wrapper);
+    _tpl_story_main.appendChild(_tpl_story_image);
+    _tpl_story_main.appendChild(_tpl_story_title);
+    _tpl_story_main.appendChild(_tpl_story_date);
+    _tpl_story_main.appendChild(_tpl_story_position);
+    _tpl_story_main.appendChild(_tpl_story_content_inject);
 };
