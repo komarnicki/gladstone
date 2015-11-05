@@ -106,6 +106,7 @@ Gladstone.prototype.initiate = function () {
             'next': document.getElementById('story_next'),
             'image': document.getElementById('story_image'),
             'title': document.getElementById('story_title'),
+            'subTitle': document.getElementById('story_subtitle'),
             'date': document.getElementById('story_date'),
             'position': document.getElementById('story_position'),
             'content': document.getElementById('story_content_inject')
@@ -203,6 +204,7 @@ Gladstone.prototype.setMarkers = function () {
             'color',
             'image',
             'date',
+            'subTitle',
             'label',
             'description'
         ];
@@ -338,6 +340,7 @@ Gladstone.prototype.setMarkers = function () {
                 'color': _m[i].color,
                 'image': _m[i].image,
                 'date': _m[i].date,
+                'subTitle': _m[i].subTitle,
                 'label': _m[i].label,
                 'zoom': _m[i].zoom,
                 'description': _m[i].description
@@ -572,7 +575,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     _s.article.setAttribute('data-previous', m[0].args.marker_previous_id);
     _s.article.setAttribute('data-current', m[0].args.marker_id);
     _s.article.setAttribute('data-next', m[0].args.marker_next_id);
-    //_s.header.innerHTML = m[0].args.label;
+    _s.subTitle.innerHTML = m[0].args.subTitle;
 
     _img.onload = function () {
 
@@ -661,6 +664,7 @@ Gladstone.prototype.storyClose = function () {
     _s.article.setAttribute('data-previous', '');
     _s.article.setAttribute('data-current', '');
     _s.article.setAttribute('data-next', '');
+    _s.subTitle.innerHTML = '';
     _s.image.style.backgroundImage = '';
     _s.image.style.height = '';
     _s.title.innerHTML = '';
@@ -715,6 +719,7 @@ Gladstone.prototype.setMarkup = function () {
         _tpl_story_main = document.createElement('main'),
         _tpl_story_image = document.createElement('figure'),
         _tpl_story_title = document.createElement('h1'),
+        _tpl_story_subtitle = document.createElement('div'),
         _tpl_story_date = document.createElement('div'),
         _tpl_story_position = document.createElement('div'),
         _tpl_story_content_inject = document.createElement('div'),
@@ -749,6 +754,7 @@ Gladstone.prototype.setMarkup = function () {
 
     _tpl_story_article.id = 'story_article';
     _tpl_story_header.id = 'story_header';
+    _tpl_story_header.className = 'noselect';
     _tpl_story_close.id = 'story_close';
     _tpl_story_previous.id = 'story_previous';
     _tpl_story_next.id = 'story_next';
@@ -756,6 +762,8 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_image.id = 'story_image';
     _tpl_story_title.id = 'story_title';
     _tpl_story_title.className = 'noselect';
+    _tpl_story_subtitle.id = 'story_subtitle';
+    _tpl_story_subtitle.className = 'noselect';
     _tpl_story_date.id = 'story_date';
     _tpl_story_date.className = 'noselect';
     _tpl_story_position.id = 'story_position';
@@ -787,6 +795,7 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_header.appendChild(_tpl_story_close);
     _tpl_story_header.appendChild(_tpl_story_previous);
     _tpl_story_header.appendChild(_tpl_story_next);
+    _tpl_story_header.appendChild(_tpl_story_subtitle);
 
     _tpl_story_main.appendChild(_tpl_story_image);
     _tpl_story_main.appendChild(_tpl_story_title);
