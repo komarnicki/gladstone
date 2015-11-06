@@ -370,10 +370,10 @@ Gladstone.prototype.setMarkers = function () {
     });
 
     /**
-     * Home alone can't collide but if we have more than one marker on the map, we should turn on collision detection.
-     * Follow to this method's definition to learn more what it does.
+     * We should always check possible collision detection.
+     * Checking is done only when there is more than one marker.
      */
-    if (this._markers.custom.length >= 2) this.detectMarkersCollisions();
+    this.detectMarkersCollisions();
 
     /**
      * Assign every DOM element with marker created by _gcm to _markers.dom for easier refference.
@@ -444,9 +444,8 @@ Gladstone.prototype.detectMarkersCollisions = function () {
 
     this.map.addListener('idle', (function () {
 
-        var self = this;
-
-        var _run = function () {
+        var self = this,
+            _run = function () {
 
             var sensitivity = 2,
                 markers = [],
