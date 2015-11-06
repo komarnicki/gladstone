@@ -570,6 +570,7 @@ Gladstone.prototype.highlighBounds = function (continent_id) {
 Gladstone.prototype.storyOpen = function (marker_id) {
 
     this._map.boundsActive = null;
+    this.highlighBounds(null);
 
     if (this._markers.custom.length === 1) {
         this._story.previous.style.display = 'none';
