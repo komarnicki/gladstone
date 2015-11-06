@@ -245,6 +245,10 @@ aside#map_continents_controls {
     margin: 0;
 }
 
+#story_article #story_main #story_image:hover {
+    cursor: pointer;
+}
+
 #story_article #story_main #story_title {
     font-size: 40px;
     font-weight: 400;

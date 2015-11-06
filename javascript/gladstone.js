@@ -203,6 +203,7 @@ Gladstone.prototype.setMarkers = function () {
             'zoom',
             'color',
             'image',
+            'link',
             'date',
             'position',
             'subTitle',
@@ -340,6 +341,7 @@ Gladstone.prototype.setMarkers = function () {
                 'marker_next_id': _m[_next].id,
                 'color': _m[i].color,
                 'image': _m[i].image,
+                'link': _m[i].link,
                 'date': _m[i].date,
                 'position': _m[i].position,
                 'subTitle': _m[i].subTitle,
@@ -367,6 +369,10 @@ Gladstone.prototype.setMarkers = function () {
 
     google.maps.event.addDomListener(_s.close, 'click', function () {
         self.storyClose();
+    });
+
+    google.maps.event.addDomListener(_s.image, 'click', function () {
+        self.storyRedirect();
     });
 
     /**
@@ -736,6 +742,15 @@ Gladstone.prototype.storyNext = function () {
 
     var _dest = this._story.article.getAttribute('data-next');
     this.storyOpen(_dest);
+};
+
+Gladstone.prototype.storyRedirect = function () {
+
+    var _s_id = this._markers.active.getAttribute('data-id'),
+        _url = this._markers.custom[_s_id].args.link,
+        _dest = location.protocol + "//" + location.host + '/' + _url;
+
+    window.open(_dest, '_blank');
 };
 
 Gladstone.prototype.setMarkup = function () {
