@@ -115,17 +115,29 @@ aside#map_continents_controls {
 
 #story_article {
     top: 0;
-    display: none;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     position: absolute;
     z-index: 2000;
     width: 50%;
+    -webkit-transition: 0.55s ease;
+    -moz-transition: 0.55s ease;
+    -o-transition: 0.55s ease;
+    transition: 0.55s ease;
+    -webkit-transform: translate(-100%,0);
+    -moz-transform: translate(-100%,0);
+    -o-transform: translate(-100%,0);
+    -ms-transform: translate(-100%,0);
+    transform: translate(-100%,0);
 }
 
 #story_article.opened {
-    display: block;
+    -webkit-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    -o-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    transform: translate(0,0);
 }
 
 #story_article #story_header {
@@ -188,9 +200,13 @@ aside#map_continents_controls {
     background-size: cover;
     position: relative;
     width: inherit;
+    height: 0;
     z-index: 2000;
     overflow: hidden;
-    transition: height 0.25s ease-out;
+    -webkit-transition: 0.35s ease-out;
+    -moz-transition: 0.35s ease-out;
+    -o-transition: 0.35s ease-out;
+    transition: 0.35s ease-out;
     padding: 0;
     margin: 0;
 }
@@ -229,7 +245,6 @@ aside#map_continents_controls {
     position: relative;
     z-index: 20;
     overflow: hidden;
-    transition: all 0.125s ease;
 }
 
 #random .random_story:hover {
@@ -239,6 +254,14 @@ aside#map_continents_controls {
 
 #random .random_story_tile_image {
     padding: 0;
+    -webkit-transition: 1.35s ease-out;
+    -moz-transition: 1.35s ease-out;
+    -o-transition: 1.35s ease-out;
+    transition: 1.35s ease-out;
+}
+
+#random .random_story_tile_image.random_story_tile_image_hidden {
+    opacity: 0;
 }
 
 #random .random_story_tile_image > div {

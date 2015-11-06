@@ -579,8 +579,18 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     var _s = this._story,
         _img = new Image(),
         m = this._markers.custom.filter(function (marker) {
-        return marker.args.marker_id == marker_id;
-    });
+            return marker.args.marker_id == marker_id;
+        }),
+        _show_image_tiles = function () {
+
+            var _rs = document.getElementsByClassName('random_story_tile_image');
+
+            for (var i = 0; i < _rs.length; i++) {
+                setTimeout(function (_show_image_tile) {
+                    _show_image_tile.classList.remove('random_story_tile_image_hidden');
+                }, Math.floor(Math.random() * 10000), _rs[i]);
+            }
+        };
 
     if (_s.article.classList.contains('opened') === true &&
         _s.article.getAttribute('data-current') == m[0].args.marker_id) return false;
@@ -644,7 +654,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
         if (_rand_m_id == marker_id) continue; // Exclude currently opened marker
 
         _ti.setAttribute('data-dest-id', _rand_m_id);
-        _ti.className = 'random_story random_story_tile_image';
+        _ti.className = 'random_story random_story_tile_image_hidden random_story_tile_image';
         _ti.style.width = _t_dim + 'px';
         _ti.style.height = _t_dim + 'px';
 
@@ -683,6 +693,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     }
 
     _s.article.scrollTop = 0;
+    _show_image_tiles();
 };
 
 Gladstone.prototype.storyClose = function () {
