@@ -152,7 +152,7 @@ Gladstone.prototype.setMarkers = function () {
             // Marker's wrapper
             _m = this.div = document.createElement('div');
             _m.id = 'marker_' + self.args.marker_id;
-            _m.className = 'marker ' + self.args.color + ' noselect';
+            _m.className = 'marker marker_sleep ' + self.args.color + ' noselect';
             _m.dataset.id = self.args.marker_id;
             _m.dataset.previous_id = self.args.marker_previous_id;
             _m.dataset.next_id = self.args.marker_next_id;
@@ -376,6 +376,11 @@ Gladstone.prototype.setMarkers = function () {
     this.detectMarkersCollisions();
 
     /**
+     * Wake up markers once created
+     */
+    this.wakeUpMarkers();
+
+    /**
      * Assign every DOM element with marker created by _gcm to _markers.dom for easier refference.
      *
      * @type {NodeList}
@@ -414,6 +419,30 @@ Gladstone.prototype.setMarkers = function () {
 
             _hint.style.display = 'block';
         }
+
+    }.bind(this)));
+};
+
+/**
+ * Method animates marker for the first time they are loaded via _gcm object.
+ */
+Gladstone.prototype.wakeUpMarkers = function () {
+
+    var _l = this.map.addListener('idle', (function () {
+
+            var _m = this._markers.dom,
+                _run = function () {
+
+                for (var i = 0; i < _m.length; i++) {
+                    setTimeout(function (_marker_wakeup) {
+                        _marker_wakeup.classList.remove('marker_sleep');
+                    }, Math.floor(Math.random() * 2500), _m[i]);
+                }
+
+                google.maps.event.removeListener(_l); // You're not a virgin anymore. Kill yourself.
+            };
+
+        if (this._markers.dom.length > 0) _run();
 
     }.bind(this)));
 };

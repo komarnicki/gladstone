@@ -282,8 +282,27 @@ aside#map_continents_controls {
     height: auto;
     position: absolute;
     z-index: 500;
-    overflow: auto;
+    overflow: hidden;
     float: left;
+}
+
+.marker.marker_sleep { }
+
+.marker.marker_sleep .marker_pointer {
+    -webkit-transform: translate(0,22px);
+    -moz-transform: translate(0,22px);
+    -o-transform: translate(0,22px);
+    -ms-transform: translate(0,22px);
+    transform: translate(0,22px);
+}
+
+.marker.marker_sleep .marker_label {
+    display: none;
+}
+
+.marker.active .marker_label {
+    display: block;
+    width: 200px;
 }
 
 .marker:hover {
@@ -293,12 +312,16 @@ aside#map_continents_controls {
 
 .marker:not(.active):hover .marker_pointer,
 .marker:not(.active):hover .marker_label {
-    color: #ff0040 !important;
     cursor: pointer !important;
+}
+
+.marker:not(.active):hover .marker_label {
+    display: block;
 }
 
 .marker.active {
     cursor: default;
+    width: 222px;
 }
 
 .marker.collides .marker_label {
@@ -308,12 +331,22 @@ aside#map_continents_controls {
 }
 
 .marker_pointer {
+    position: relative;
     display: block;
     float: left;
     width: 14px;
     height: 22px;
     background-size: cover;
     background-repeat: no-repeat;
+    -webkit-transition: 1s ease-in-out;
+    -moz-transition: 1s ease-in-out;
+    -o-transition: 1s ease-in-out;
+    transition: 1s ease-in-out;
+    -webkit-transform: translate(0,0);
+    -moz-transform: translate(0,0);
+    -o-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    transform: translate(0,0);
 }
 
 .marker_pointer:hover {
@@ -321,7 +354,7 @@ aside#map_continents_controls {
 }
 
 .marker_label {
-    display: block;
+    display: none;
     font-size: 14px;
     white-space: nowrap;
     float: left;
