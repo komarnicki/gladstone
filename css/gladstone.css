@@ -359,7 +359,7 @@ aside#map_continents_controls {
     float: left;
     width: 14px;
     height: 22px;
-    background-size: cover;
+    background-size: 14px 22px;
     background-repeat: no-repeat;
     -webkit-transition: 1s ease-in-out;
     -moz-transition: 1s ease-in-out;
