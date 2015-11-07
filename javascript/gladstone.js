@@ -703,11 +703,11 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     }
 
     var _custom_markers_shuffled = _shuffle(this._markers.custom),
-        _limit = 3;
+        _limit = 6;
 
     for (var i = 0; i < _custom_markers_shuffled.length; i++) {
 
-        if (i > _limit) break;
+        if (i + 1 > _limit) break;
 
         var _m = _custom_markers_shuffled[i];
 
