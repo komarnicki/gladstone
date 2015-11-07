@@ -299,7 +299,13 @@ Gladstone.prototype.setMarkers = function () {
     var listenZoom = function () {
 
         var _dir = this.getAttribute('id'),
-            _z = self.map.getZoom();
+            _z = self.map.getZoom(),
+            _s = self._story.article;
+
+        /**
+         * Prevent from using zoom when story is opened.
+         */
+        if (_s.classList.contains('opened')) return false;
 
         /**
          * Depending on the zoom direction, increase or decrease map zoom by calling "setZoom" with an integer value
@@ -633,7 +639,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
     this.map.setOptions({
         'draggable': false,
-        'scrollwheel': false,
+        'scrollwheel': false
     });
     this.map.panTo(new google.maps.LatLng(m[0].latlng.lat(), m[0].latlng.lng()));
     this.map.setZoom(m[0].args.zoom);
