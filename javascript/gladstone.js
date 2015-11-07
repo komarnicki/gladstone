@@ -647,6 +647,17 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     _rand.style.width = _rand_w + 'px';
     _rand.innerHTML = '';
 
+    if (this._markers.custom.length - 1 > 0) {
+
+        var _rand_see_more = document.createElement('aside');
+
+        _rand_see_more.id = 'random_see_more';
+        _rand_see_more.className = 'hand noselect';
+        _rand_see_more.innerHTML = 'Do you have some spare time? See more below! :)';
+
+        _s.content.appendChild(_rand_see_more);
+    }
+
     for (var i = 0; i < this._markers.custom.length; i++) {
 
         var _rand_m_id = i + 1,
@@ -777,6 +788,10 @@ Gladstone.prototype.setMarkup = function () {
         _tpl_story_next = document.createElement('nav'),
         _tpl_story_main = document.createElement('main'),
         _tpl_story_image = document.createElement('figure'),
+        _tpl_story_share_container = document.createElement('nav'),
+        _tpl_story_share_container_wrapper = document.createElement('div'),
+        _tpl_story_share_container_twitter = document.createElement('nav'),
+        _tpl_story_share_container_url = document.createElement('nav'),
         _tpl_story_title = document.createElement('h1'),
         _tpl_story_subtitle = document.createElement('div'),
         _tpl_story_date = document.createElement('div'),
@@ -819,6 +834,8 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_next.id = 'story_next';
     _tpl_story_main.id = 'story_main';
     _tpl_story_image.id = 'story_image';
+    _tpl_story_share_container.id = 'story_share_container';
+    _tpl_story_share_container_wrapper.id = 'story_share_container_wrapper';
     _tpl_story_title.id = 'story_title';
     _tpl_story_title.className = 'noselect';
     _tpl_story_subtitle.id = 'story_subtitle';
@@ -861,4 +878,10 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_main.appendChild(_tpl_story_date);
     _tpl_story_main.appendChild(_tpl_story_position);
     _tpl_story_main.appendChild(_tpl_story_content_inject);
+
+    _tpl_story_share_container.appendChild(_tpl_story_share_container_wrapper);
+    _tpl_story_share_container_wrapper.appendChild(_tpl_story_share_container_twitter);
+    _tpl_story_share_container_wrapper.appendChild(_tpl_story_share_container_url);
+
+    _tpl_story_image.appendChild(_tpl_story_share_container);
 };
