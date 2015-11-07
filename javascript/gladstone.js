@@ -658,11 +658,14 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
     _img.onload = function () {
 
-        var _sw = _s.image.clientWidth;
-        var _h = Math.floor((_sw * _img.height) / _img.width);
+        var _n_width = _img.naturalWidth,
+            _n_height = _img.naturalHeight,
+            _d_width = _s.article.offsetWidth,
+            _d_height = ((_n_height * _d_width) / _n_width);
 
         _s.image.style.backgroundImage = 'url(' + m[0].args.image + ')';
-        _s.image.style.height = _h + 'px';
+        _s.image.style.width = _d_width + 'px';
+        _s.image.style.height = _d_height + 'px';
     };
 
     _img.src = m[0].args.image;
@@ -759,6 +762,7 @@ Gladstone.prototype.storyClose = function () {
     _s.subTitle.innerHTML = '';
     _s.image.setAttribute('data-id', '');
     _s.image.style.backgroundImage = '';
+    _s.image.style.width = '';
     _s.image.style.height = '';
     _s.title.innerHTML = '';
     _s.date.innerHTML = '';
