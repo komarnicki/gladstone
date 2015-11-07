@@ -267,7 +267,7 @@ Gladstone.prototype.setMarkers = function () {
              * @type {string}
              */
             self._map.boundsActive = _ca;
-            self.highlighBounds(_ca);
+            self.highlightBounds(_ca);
 
             /**
              * Close story window (if opened)
@@ -439,7 +439,7 @@ Gladstone.prototype.setMarkers = function () {
 
         } else {
 
-            this.highlighBounds(null);
+            this.highlightBounds(null);
             this._map.boundsActive = null;
 
             _hint.style.display = 'block';
@@ -588,7 +588,7 @@ Gladstone.prototype.countVisibleMarkers = function () {
  *
  * @param continent_id
  */
-Gladstone.prototype.highlighBounds = function (continent_id) {
+Gladstone.prototype.highlightBounds = function (continent_id) {
 
     var _h_cn = document.getElementsByClassName('continent_handler');
 
@@ -607,7 +607,7 @@ Gladstone.prototype.highlighBounds = function (continent_id) {
 Gladstone.prototype.storyOpen = function (marker_id) {
 
     this._map.boundsActive = null;
-    this.highlighBounds(null);
+    this.highlightBounds(null);
 
     if (this._markers.custom.length === 1) {
         this._story.previous.style.display = 'none';
