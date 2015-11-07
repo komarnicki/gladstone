@@ -31,7 +31,7 @@ function Gladstone(key, canvas, markers) {
          */
         window.onload = function _() {
             var _s = document.createElement('script');
-            _s.src = 'https://maps.googleapis.com/maps/api/js?key=' + self.key + '&sensor=false&callback=_c';
+            _s.src = 'https://maps.googleapis.com/maps/api/js?key=' + self.key + '&callback=_c';
             document.body.appendChild(_s);
         };
 
