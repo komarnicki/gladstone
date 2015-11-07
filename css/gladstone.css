@@ -497,7 +497,7 @@ aside#map_continents_controls {
     width: 222px;
 }
 
-.marker.collides .marker_label {
+.marker:not(.active).collides .marker_label {
     display: none;
     pointer-events: none;
     cursor: default;
@@ -511,10 +511,10 @@ aside#map_continents_controls {
     height: 22px;
     background-size: 14px 22px;
     background-repeat: no-repeat;
-    -webkit-transition: 1s ease-in-out;
-    -moz-transition: 1s ease-in-out;
-    -o-transition: 1s ease-in-out;
-    transition: 1s ease-in-out;
+    -webkit-transition: 0.25s linear;
+    -moz-transition: 0.25s linear;
+    -o-transition: 0.25s linear;
+    transition: 0.25s linear;
     -webkit-transform: translate(0,0);
     -moz-transform: translate(0,0);
     -o-transform: translate(0,0);
@@ -538,13 +538,13 @@ aside#map_continents_controls {
     overflow: hidden;
 }
 
-.marker.collides {
+.marker:not(.active).collides {
     pointer-events: none;
     cursor: default;
     z-index: 499;
 }
 
-.marker.collides .marker_pointer {
+.marker:not(.active).collides .marker_pointer {
     pointer-events: none;
     cursor: default;
     -khtml-filter: grayscale(100%) brightness(150%);
@@ -553,6 +553,7 @@ aside#map_continents_controls {
     -webkit-filter: grayscale(100%) brightness(150%);
     filter: grayscale(100%) brightness(150%);
     background-size: 6px 14px;
+    background-position: center bottom;
 }
 
 #story_article.color_red1 #story_header,
