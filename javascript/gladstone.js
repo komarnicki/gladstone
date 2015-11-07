@@ -822,7 +822,8 @@ Gladstone.prototype.setMarkup = function () {
      * @type {Element}
      * @private
      */
-    var _tpl_map_controls = document.createElement('aside'),
+    var _tpl_wrapper = document.createElement('div'),
+        _tpl_map_controls = document.createElement('aside'),
         _tpl_map_controls_all_continents = document.createElement('nav'),
         _tpl_map_controls_map_zoom_in = document.createElement('nav'),
         _tpl_map_controls_map_zoom_out = document.createElement('nav'),
@@ -854,6 +855,8 @@ Gladstone.prototype.setMarkup = function () {
      *
      * @type {string}
      */
+    _tpl_wrapper.id = 'gladstone_wrapper';
+
     _tpl_map_controls.id = 'map_controls';
     _tpl_map_controls.className = 'map_controls_group';
     _tpl_map_controls_all_continents.id = 'all_continents';
@@ -904,10 +907,12 @@ Gladstone.prototype.setMarkup = function () {
     /**
      * Builders
      */
-    document.body.appendChild(_tpl_map_controls);
-    document.body.appendChild(_tpl_marker_assist);
-    document.body.appendChild(_tpl_map_controls_continents);
-    document.body.appendChild(_tpl_story_article);
+    document.body.appendChild(_tpl_wrapper);
+
+    _tpl_wrapper.appendChild(_tpl_map_controls);
+    _tpl_wrapper.appendChild(_tpl_marker_assist);
+    _tpl_wrapper.appendChild(_tpl_map_controls_continents);
+    _tpl_wrapper.appendChild(_tpl_story_article);
 
     _tpl_map_controls.appendChild(_tpl_map_controls_all_continents);
     _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_in);
