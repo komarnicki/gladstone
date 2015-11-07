@@ -626,8 +626,17 @@ Gladstone.prototype.storyOpen = function (marker_id) {
             for (var i = 0; i < _rs.length; i++) {
                 setTimeout(function (_show_image_tile) {
                     _show_image_tile.classList.remove('random_story_tile_image_hidden');
-                }, Math.floor(Math.random() * 10000), _rs[i]);
+                }, Math.floor(Math.random() * 5000), _rs[i]);
             }
+        },
+        _shuffle = function (array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
         };
 
     if (_s.article.classList.contains('opened') === true &&
@@ -693,20 +702,25 @@ Gladstone.prototype.storyOpen = function (marker_id) {
         _s.content.appendChild(_rand_see_more);
     }
 
-    for (var i = 0; i < this._markers.custom.length; i++) {
+    var _custom_markers_shuffled = _shuffle(this._markers.custom),
+        _limit = 3;
 
-        var _rand_m_id = i + 1,
-            _m = this._markers.custom[i],
-            _ti = document.createElement('div'),
+    for (var i = 0; i < _custom_markers_shuffled.length; i++) {
+
+        if (i > _limit) break;
+
+        var _m = _custom_markers_shuffled[i];
+
+        if (_m.args.marker_id == marker_id) continue; // Exclude currently opened marker
+
+        var _ti = document.createElement('div'),
             _ti_inner = document.createElement('div'),
             _ti_locat = document.createElement('h5'),
             _tc = document.createElement('div'),
             _tc_h = document.createElement('h4'),
             _tc_c = document.createElement('div');
 
-        if (_rand_m_id == marker_id) continue; // Exclude currently opened marker
-
-        _ti.setAttribute('data-dest-id', _rand_m_id);
+        _ti.setAttribute('data-dest-id', _m.args.marker_id);
         _ti.className = 'random_story random_story_tile_image_hidden random_story_tile_image';
         _ti.style.width = _t_dim + 'px';
         _ti.style.height = _t_dim + 'px';
@@ -718,7 +732,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
         _ti_locat.innerHTML = _m.args.label;
         _ti_inner.appendChild(_ti_locat);
 
-        _tc.setAttribute('data-dest-id', _rand_m_id);
+        _tc.setAttribute('data-dest-id', _m.args.marker_id);
         _tc.className = 'random_story random_story_tile_content ' + _m.args.color;
         _tc.style.width = _t_dim + 'px';
         _tc.style.height = _t_dim + 'px';
