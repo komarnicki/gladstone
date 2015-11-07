@@ -607,7 +607,8 @@ Gladstone.prototype.storyOpen = function (marker_id) {
     }
 
     this.map.setOptions({
-        'draggable': false
+        'draggable': false,
+        'scrollwheel': false,
     });
     this.map.panTo(new google.maps.LatLng(m[0].latlng.lat(), m[0].latlng.lng()));
     this.map.setZoom(m[0].args.zoom);
@@ -739,7 +740,8 @@ Gladstone.prototype.storyClose = function () {
 
     this.map.panBy(window.innerWidth * 0.25, 0);
     this.map.setOptions({
-        'draggable': this._map.options.draggable
+        'draggable': this._map.options.draggable,
+        'scrollwheel': this._map.options.scrollwheel
     });
 };
 
