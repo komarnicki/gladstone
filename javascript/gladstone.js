@@ -371,8 +371,8 @@ Gladstone.prototype.setMarkers = function () {
         self.storyClose();
     });
 
-    google.maps.event.addDomListener(_s.image, 'click', function () {
-        self.storyRedirect();
+    google.maps.event.addDomListener(_s.image, 'click', function (e) {
+        if (e.target == this) self.storyRedirect();
     });
 
     /**
@@ -838,6 +838,8 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_image.id = 'story_image';
     _tpl_story_share_container.id = 'story_share_container';
     _tpl_story_share_container_wrapper.id = 'story_share_container_wrapper';
+    _tpl_story_share_container_twitter.id = 'share_twitter';
+    _tpl_story_share_container_url.id = 'share_url';
     _tpl_story_title.id = 'story_title';
     _tpl_story_title.className = 'noselect';
     _tpl_story_subtitle.id = 'story_subtitle';
@@ -845,6 +847,7 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_date.id = 'story_date';
     _tpl_story_date.className = 'noselect';
     _tpl_story_position.id = 'story_position';
+    _tpl_story_position.className = 'noselect';
     _tpl_story_content_inject.id = 'story_content_inject';
     _tpl_story_content_inject.className = 'noselect';
     _tpl_random.id = 'random';
@@ -882,8 +885,8 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_main.appendChild(_tpl_story_content_inject);
 
     _tpl_story_share_container.appendChild(_tpl_story_share_container_wrapper);
-    _tpl_story_share_container_wrapper.appendChild(_tpl_story_share_container_twitter);
     _tpl_story_share_container_wrapper.appendChild(_tpl_story_share_container_url);
+    _tpl_story_share_container_wrapper.appendChild(_tpl_story_share_container_twitter);
 
     _tpl_story_image.appendChild(_tpl_story_share_container);
 };
