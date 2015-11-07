@@ -105,6 +105,8 @@ Gladstone.prototype.initiate = function () {
             'previous': document.getElementById('story_previous'),
             'next': document.getElementById('story_next'),
             'image': document.getElementById('story_image'),
+            'share_twitter': document.getElementById('share_twitter'),
+            'share_url': document.getElementById('share_url'),
             'title': document.getElementById('story_title'),
             'subTitle': document.getElementById('story_subtitle'),
             'date': document.getElementById('story_date'),
@@ -252,7 +254,7 @@ Gladstone.prototype.setMarkers = function () {
     var listenContinent = function () {
 
         var _ca = this.getAttribute('id'),
-            _m = self.filterMarkers(_ca),
+            _m = self.getMarkerByContinent(_ca),
             _ml = _m.length;
 
         /**
@@ -372,7 +374,18 @@ Gladstone.prototype.setMarkers = function () {
     });
 
     google.maps.event.addDomListener(_s.image, 'click', function (e) {
-        if (e.target == this) self.storyRedirect();
+        var _current = _s.article.getAttribute('data-current');
+        if (e.target == this) self.storyRedirect(_current);
+    });
+
+    google.maps.event.addDomListener(_s.share_url, 'click', function () {
+        var _current = _s.article.getAttribute('data-current');
+        self.storyRedirect(_current);
+    });
+
+    google.maps.event.addDomListener(_s.share_twitter, 'click', function () {
+        var _current = _s.article.getAttribute('data-current');
+        self.storyShare(this.getAttribute('id'), _current);
     });
 
     /**
@@ -454,20 +467,32 @@ Gladstone.prototype.wakeUpMarkers = function () {
 };
 
 /**
- * Narrow down markers array by continent attribute.
- * Method returns those markers which continent attribute matches the string passed as an argument.
+ * Get marker by ID
+ *
+ * @param marker_id
+ * @returns {Array.<T>}
+ */
+Gladstone.prototype.getMarkerById = function (marker_id) {
+
+    return this._markers.custom.filter(function (marker) {
+        return marker.args.marker_id == marker_id;
+    });
+};
+
+/**
+ * Get all markers by continent
  *
  * @param continent
  * @returns {*}
  */
-Gladstone.prototype.filterMarkers = function (continent) {
+Gladstone.prototype.getMarkerByContinent = function (continent) {
 
     if (continent === 'all_continents') {
         return this._markers.custom;
     }
 
     return this._markers.custom.filter(function (marker) {
-        return marker.continent === continent;
+        return marker.continent == continent;
     });
 };
 
@@ -726,6 +751,7 @@ Gladstone.prototype.storyClose = function () {
     _s.article.setAttribute('data-current', '');
     _s.article.setAttribute('data-next', '');
     _s.subTitle.innerHTML = '';
+    _s.image.setAttribute('data-id', '');
     _s.image.style.backgroundImage = '';
     _s.image.style.height = '';
     _s.title.innerHTML = '';
@@ -757,13 +783,29 @@ Gladstone.prototype.storyNext = function () {
     this.storyOpen(_dest);
 };
 
-Gladstone.prototype.storyRedirect = function () {
+Gladstone.prototype.storyRedirect = function (marker_id) {
 
-    var _s_id = this._markers.active.getAttribute('data-id'),
-        _url = this._markers.custom[_s_id].args.link,
-        _dest = location.protocol + "//" + location.host + '/' + _url;
+    var _m = this.getMarkerById(marker_id),
+        _url = _m[0].args.link;
 
-    window.open(_dest, '_blank');
+    window.open(_url, '_blank');
+};
+
+Gladstone.prototype.storyShare = function (type, marker_id) {
+
+    var _m = this.getMarkerById(marker_id);
+
+    switch(type) {
+        case 'share_twitter':
+
+            var label = _m[0].args.label,
+                subTitle = _m[0].args.subTitle,
+                link = _m[0].args.link,
+                url = 'http://twitter.com/share?text=' + label + ' - ' + subTitle + '…&url=' + link; // Support hashtags
+
+            window.open(url, 'Share it with your friends!', 'width=600, height=240, scrollbars=no');
+            break;
+    }
 };
 
 Gladstone.prototype.setMarkup = function () {
