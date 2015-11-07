@@ -382,12 +382,12 @@ Gladstone.prototype.setMarkers = function () {
     this.detectMarkersCollisions();
 
     /**
-     * Wake up markers once created
+     * Wake up markers once created.
      */
     this.wakeUpMarkers();
 
     /**
-     * Assign every DOM element with marker created by _gcm to _markers.dom for easier refference.
+     * Assign every DOM element with marker created by _gcm to _markers.dom for easier reference.
      *
      * @type {NodeList}
      */
