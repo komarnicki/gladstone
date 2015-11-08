@@ -20,6 +20,9 @@ function Gladstone(key, canvas, markers) {
         this.key = key;
         this.canvas = canvas;
         this.markers = markers;
+        this.options = {
+            'slugs': true
+        };
 
         var self = this;
 
@@ -656,6 +659,18 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
     this._markers.active = document.getElementById('marker_' + marker_id);
     this._markers.active.classList.add('active');
+
+    if (this.options.slugs === true) {
+        switch(window.location.protocol) {
+            case 'http:':
+            case 'https:':
+                window.history.pushState({}, m[0].args.subTitle, m[0].args.link);
+                break;
+            case 'file:':
+                console.log('Dynamic location change cannot work with local files. Host your project via http(s).');
+                break;
+        }
+    }
 
     _s.article.className = '';
     _s.article.classList.add('opened');
