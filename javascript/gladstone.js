@@ -512,6 +512,9 @@ Gladstone.prototype.wakeUpMarkers = function () {
                     }, Math.floor(Math.random() * 2500), _m[i]);
                 }
 
+                if (parseInt(self.options.storyAutoOpen) > 0)
+                    self.storyOpen(self.options.storyAutoOpen);
+
                 google.maps.event.removeListener(_l); // You're not a virgin anymore. Kill yourself.
             };
 
