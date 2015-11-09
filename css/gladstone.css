@@ -493,7 +493,7 @@ aside#map_continents_controls {
 
 .marker.active .marker_label {
     display: block;
-    width: 200px;
+    width: 198px;
 }
 
 .marker:hover {
