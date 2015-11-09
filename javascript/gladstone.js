@@ -897,7 +897,7 @@ Gladstone.prototype.storyShare = function (type, marker_id) {
 
             var label = _m[0].args.label,
                 subTitle = _m[0].args.subTitle,
-                link = _m[0].args.link,
+                link = (this.options.slugs === true ? this.options.slugsRoot + _m[0].args.link : _m[0].args.link),
                 url = 'http://twitter.com/share?text=' + label + ' - ' + subTitle + '…&url=' + link; // Support hashtags
 
             window.open(url, 'Share it with your friends!', 'width=600, height=240, scrollbars=no');
