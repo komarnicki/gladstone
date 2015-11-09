@@ -518,9 +518,13 @@ Gladstone.prototype.wakeUpMarkers = function () {
  */
 Gladstone.prototype.getMarkerById = function (marker_id) {
 
-    return this._markers.custom.filter(function (marker) {
+    var m = this._markers.custom.filter(function (marker) {
         return marker.args.marker_id == marker_id;
     });
+
+    if (m.length === 0) throw 'Requested marker does not exist';
+
+    return m;
 };
 
 /**
