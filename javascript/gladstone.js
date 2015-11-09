@@ -22,7 +22,7 @@ function Gladstone(key, canvas, markers, options) {
         this.canvas = canvas;
         this.markers = markers;
         this.options = {
-            'slugs': true,
+            'slugs': false,
             'slugsRoot': 'http://gladstone.local/map/',
             'storyAutoOpen': 0
         };
