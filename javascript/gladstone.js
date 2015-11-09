@@ -11,9 +11,10 @@
  * @param key
  * @param canvas
  * @param markers
+ * @param options
  * @constructor
  */
-function Gladstone(key, canvas, markers) {
+function Gladstone(key, canvas, markers, options) {
 
     try {
 
@@ -21,8 +22,12 @@ function Gladstone(key, canvas, markers) {
         this.canvas = canvas;
         this.markers = markers;
         this.options = {
-            'slugs': true
+            'slugs': true,
+            'slugsRoot': 'http://gladstone.local/map/',
+            'storyAutoOpen': 0
         };
+
+        this.options = this.mergeOptions(this.options, options);
 
         var self = this;
 
@@ -67,6 +72,36 @@ function Gladstone(key, canvas, markers) {
         console.log(e);
     }
 }
+
+/**
+ * Combines Gladstone "options" object with input object giving precedence to the source.
+ *
+ * @param target
+ * @param source
+ * @returns {{}}
+ */
+Gladstone.prototype.mergeOptions = function (target, source) {
+
+    var merged = {};
+
+    if (typeof source !== 'object') {
+        source = {};
+    }
+
+    for (var property in target) {
+        if (target.hasOwnProperty(property)) {
+            merged[property] = target[property];
+        }
+    }
+
+    for (var property in source) {
+        if (source.hasOwnProperty(property)) {
+            merged[property] = source[property];
+        }
+    }
+
+    return merged;
+};
 
 /**
  * Method sets essential objects that hold information about the map, markers and related stories.
