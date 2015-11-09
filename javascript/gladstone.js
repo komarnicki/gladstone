@@ -503,7 +503,8 @@ Gladstone.prototype.wakeUpMarkers = function () {
 
     var _l = this.map.addListener('idle', (function () {
 
-            var _m = this._markers.dom,
+            var self = this,
+                _m = this._markers.dom,
                 _run = function () {
 
                 for (var i = 0; i < _m.length; i++) {
@@ -661,173 +662,178 @@ Gladstone.prototype.highlightBounds = function (continent_id) {
 
 Gladstone.prototype.storyOpen = function (marker_id) {
 
-    this._map.boundsActive = null;
-    this.highlightBounds(null);
+    try {
 
-    if (this._markers.custom.length === 1) {
-        this._story.previous.style.display = 'none';
-        this._story.next.style.display = 'none';
-    }
+        var m = this.getMarkerById(marker_id);
 
-    var _s = this._story,
-        _img = new Image(),
-        m = this._markers.custom.filter(function (marker) {
-            return marker.args.marker_id == marker_id;
-        }),
-        _show_image_tiles = function () {
+        this._map.boundsActive = null;
+        this.highlightBounds(null);
 
-            var _rs = document.getElementsByClassName('random_story_tile_image');
+        if (this._markers.custom.length === 1) {
+            this._story.previous.style.display = 'none';
+            this._story.next.style.display = 'none';
+        }
 
-            for (var i = 0; i < _rs.length; i++) {
-                setTimeout(function (_show_image_tile) {
-                    _show_image_tile.classList.remove('random_story_tile_image_hidden');
-                }, Math.floor(Math.random() * 5000), _rs[i]);
+        var _s = this._story,
+            _img = new Image(),
+            _show_image_tiles = function () {
+
+                var _rs = document.getElementsByClassName('random_story_tile_image');
+
+                for (var i = 0; i < _rs.length; i++) {
+                    setTimeout(function (_show_image_tile) {
+                        _show_image_tile.classList.remove('random_story_tile_image_hidden');
+                    }, Math.floor(Math.random() * 5000), _rs[i]);
+                }
+            },
+            _shuffle = function (array) {
+                for (var i = array.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                }
+                return array;
+            };
+
+        if (_s.article.classList.contains('opened') === true &&
+            _s.article.getAttribute('data-current') == m[0].args.marker_id) return false;
+
+        if (_s.article.getAttribute('data-current') != m[0].args.marker_id) {
+            this.storyClose();
+        }
+
+        this.map.setOptions({
+            'draggable': false,
+            'scrollwheel': false
+        });
+        this.map.panTo(new google.maps.LatLng(m[0].latlng.lat(), m[0].latlng.lng()));
+        this.map.setZoom(m[0].args.zoom);
+        this.map.panBy(window.innerWidth * -0.25, 0);
+
+        this._markers.active = document.getElementById('marker_' + marker_id);
+        this._markers.active.classList.add('active');
+
+        if (this.options.slugs === true) {
+            switch(window.location.protocol) {
+                case 'http:':
+                case 'https:':
+                    window.history.pushState({}, m[0].args.subTitle, this.options.slugsRoot + m[0].args.link);
+                    break;
+                case 'file:':
+                    console.log('Dynamic location change cannot work with local files. Host your project via http(s).');
+                    break;
             }
-        },
-        _shuffle = function (array) {
-            for (var i = array.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-            }
-            return array;
+        }
+
+        _s.article.className = '';
+        _s.article.classList.add('opened');
+        _s.article.classList.add(m[0].args.color);
+        _s.article.setAttribute('data-previous', m[0].args.marker_previous_id);
+        _s.article.setAttribute('data-current', m[0].args.marker_id);
+        _s.article.setAttribute('data-next', m[0].args.marker_next_id);
+        _s.subTitle.innerHTML = m[0].args.subTitle;
+
+        _img.onload = function () {
+
+            var _n_width = _img.naturalWidth,
+                _n_height = _img.naturalHeight,
+                _d_width = _s.article.offsetWidth,
+                _d_height = ((_n_height * _d_width) / _n_width);
+
+            _s.image.style.backgroundImage = 'url(' + m[0].args.image + ')';
+            _s.image.style.width = _d_width + 'px';
+            _s.image.style.height = _d_height + 'px';
         };
 
-    if (_s.article.classList.contains('opened') === true &&
-        _s.article.getAttribute('data-current') == m[0].args.marker_id) return false;
+        _img.src = m[0].args.image;
 
-    if (_s.article.getAttribute('data-current') != m[0].args.marker_id) {
-        this.storyClose();
-    }
+        _s.title.innerHTML = m[0].args.label;
+        _s.date.innerHTML = m[0].args.date;
+        _s.position.innerHTML = m[0].args.position;
+        _s.content.innerHTML = m[0].args.description;
 
-    this.map.setOptions({
-        'draggable': false,
-        'scrollwheel': false
-    });
-    this.map.panTo(new google.maps.LatLng(m[0].latlng.lat(), m[0].latlng.lng()));
-    this.map.setZoom(m[0].args.zoom);
-    this.map.panBy(window.innerWidth * -0.25, 0);
+        var _rand = document.getElementById('random'),
+            _rand_w = _s.article.offsetWidth,
+            _t_dim = _rand_w / 3;
 
-    this._markers.active = document.getElementById('marker_' + marker_id);
-    this._markers.active.classList.add('active');
+        _rand.style.width = _rand_w + 'px';
+        _rand.innerHTML = '';
 
-    if (this.options.slugs === true) {
-        switch(window.location.protocol) {
-            case 'http:':
-            case 'https:':
-                window.history.pushState({}, m[0].args.subTitle, m[0].args.link);
-                break;
-            case 'file:':
-                console.log('Dynamic location change cannot work with local files. Host your project via http(s).');
-                break;
+        if (this._markers.custom.length - 1 > 0) {
+
+            var _rand_see_more = document.createElement('aside');
+
+            _rand_see_more.id = 'random_see_more';
+            _rand_see_more.className = 'hand noselect';
+            _rand_see_more.innerHTML = 'Do you have some spare time? See more below! :)';
+
+            _s.content.appendChild(_rand_see_more);
         }
+
+        var _custom_markers_shuffled = _shuffle(this._markers.custom),
+            _limit = 6;
+
+        for (var i = 0; i < _custom_markers_shuffled.length; i++) {
+
+            if (i + 1 > _limit) break;
+
+            var _m = _custom_markers_shuffled[i];
+
+            if (_m.args.marker_id == marker_id) continue; // Exclude currently opened marker
+
+            var _ti = document.createElement('div'),
+                _ti_inner = document.createElement('div'),
+                _ti_locat = document.createElement('h5'),
+                _tc = document.createElement('div'),
+                _tc_h = document.createElement('h4'),
+                _tc_c = document.createElement('div');
+
+            _ti.setAttribute('data-dest-id', _m.args.marker_id);
+            _ti.className = 'random_story random_story_tile_image_hidden random_story_tile_image';
+            _ti.style.width = _t_dim + 'px';
+            _ti.style.height = _t_dim + 'px';
+
+            _ti_inner.style.backgroundImage = 'url(' + _m.args.image + ')';
+            _ti.appendChild(_ti_inner);
+
+            _ti_locat.className = 'location';
+            _ti_locat.innerHTML = _m.args.label;
+            _ti_inner.appendChild(_ti_locat);
+
+            _tc.setAttribute('data-dest-id', _m.args.marker_id);
+            _tc.className = 'random_story random_story_tile_content ' + _m.args.color;
+            _tc.style.width = _t_dim + 'px';
+            _tc.style.height = _t_dim + 'px';
+
+            _tc_h.className = 'title';
+            _tc_h.innerHTML = _m.args.label;
+            _tc.appendChild(_tc_h);
+
+            _tc_c.className = 'content';
+            _tc_c.innerHTML = _m.args.description.substring(0, 100) + '…';
+            _tc.appendChild(_tc_c);
+
+            _rand.appendChild(_ti);
+            _rand.appendChild(_tc);
+
+            var self = this;
+
+            _ti.addEventListener('click', function() {
+                self.storyOpen(this.getAttribute('data-dest-id'));
+            }, false);
+
+            _tc.addEventListener('click', function() {
+                self.storyOpen(this.getAttribute('data-dest-id'));
+            }, false);
+        }
+
+        _s.article.scrollTop = 0;
+        _show_image_tiles();
     }
-
-    _s.article.className = '';
-    _s.article.classList.add('opened');
-    _s.article.classList.add(m[0].args.color);
-    _s.article.setAttribute('data-previous', m[0].args.marker_previous_id);
-    _s.article.setAttribute('data-current', m[0].args.marker_id);
-    _s.article.setAttribute('data-next', m[0].args.marker_next_id);
-    _s.subTitle.innerHTML = m[0].args.subTitle;
-
-    _img.onload = function () {
-
-        var _n_width = _img.naturalWidth,
-            _n_height = _img.naturalHeight,
-            _d_width = _s.article.offsetWidth,
-            _d_height = ((_n_height * _d_width) / _n_width);
-
-        _s.image.style.backgroundImage = 'url(' + m[0].args.image + ')';
-        _s.image.style.width = _d_width + 'px';
-        _s.image.style.height = _d_height + 'px';
-    };
-
-    _img.src = m[0].args.image;
-
-    _s.title.innerHTML = m[0].args.label;
-    _s.date.innerHTML = m[0].args.date;
-    _s.position.innerHTML = m[0].args.position;
-    _s.content.innerHTML = m[0].args.description;
-
-    var _rand = document.getElementById('random'),
-        _rand_w = _s.article.offsetWidth,
-        _t_dim = _rand_w / 3;
-
-    _rand.style.width = _rand_w + 'px';
-    _rand.innerHTML = '';
-
-    if (this._markers.custom.length - 1 > 0) {
-
-        var _rand_see_more = document.createElement('aside');
-
-        _rand_see_more.id = 'random_see_more';
-        _rand_see_more.className = 'hand noselect';
-        _rand_see_more.innerHTML = 'Do you have some spare time? See more below! :)';
-
-        _s.content.appendChild(_rand_see_more);
+    catch(e) {
+        console.log(e);
     }
-
-    var _custom_markers_shuffled = _shuffle(this._markers.custom),
-        _limit = 6;
-
-    for (var i = 0; i < _custom_markers_shuffled.length; i++) {
-
-        if (i + 1 > _limit) break;
-
-        var _m = _custom_markers_shuffled[i];
-
-        if (_m.args.marker_id == marker_id) continue; // Exclude currently opened marker
-
-        var _ti = document.createElement('div'),
-            _ti_inner = document.createElement('div'),
-            _ti_locat = document.createElement('h5'),
-            _tc = document.createElement('div'),
-            _tc_h = document.createElement('h4'),
-            _tc_c = document.createElement('div');
-
-        _ti.setAttribute('data-dest-id', _m.args.marker_id);
-        _ti.className = 'random_story random_story_tile_image_hidden random_story_tile_image';
-        _ti.style.width = _t_dim + 'px';
-        _ti.style.height = _t_dim + 'px';
-
-        _ti_inner.style.backgroundImage = 'url(' + _m.args.image + ')';
-        _ti.appendChild(_ti_inner);
-
-        _ti_locat.className = 'location';
-        _ti_locat.innerHTML = _m.args.label;
-        _ti_inner.appendChild(_ti_locat);
-
-        _tc.setAttribute('data-dest-id', _m.args.marker_id);
-        _tc.className = 'random_story random_story_tile_content ' + _m.args.color;
-        _tc.style.width = _t_dim + 'px';
-        _tc.style.height = _t_dim + 'px';
-
-        _tc_h.className = 'title';
-        _tc_h.innerHTML = _m.args.label;
-        _tc.appendChild(_tc_h);
-
-        _tc_c.className = 'content';
-        _tc_c.innerHTML = _m.args.description.substring(0, 100) + '…';
-        _tc.appendChild(_tc_c);
-
-        _rand.appendChild(_ti);
-        _rand.appendChild(_tc);
-
-        var self = this;
-
-        _ti.addEventListener('click', function() {
-            self.storyOpen(this.getAttribute('data-dest-id'));
-        }, false);
-
-        _tc.addEventListener('click', function() {
-            self.storyOpen(this.getAttribute('data-dest-id'));
-        }, false);
-    }
-
-    _s.article.scrollTop = 0;
-    _show_image_tiles();
 };
 
 Gladstone.prototype.storyClose = function () {
