@@ -414,6 +414,16 @@ Gladstone.prototype.setMarkers = function () {
     });
 
     google.maps.event.addDomListener(_s.close, 'click', function () {
+
+        if (self.options.slugs === true) {
+            switch(window.location.protocol) {
+                case 'http:':
+                case 'https:':
+                    window.history.pushState({}, '', self.options.slugsRoot);
+                    break;
+            }
+        }
+
         self.storyClose();
     });
 
