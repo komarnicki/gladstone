@@ -982,14 +982,20 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_header.id = 'story_header';
     _tpl_story_header.className = 'noselect';
     _tpl_story_close.id = 'story_close';
+    _tpl_story_close.setAttribute('title', this._l('story_close'));
     _tpl_story_previous.id = 'story_previous';
+    _tpl_story_previous.setAttribute('title', this._l('story_previous'));
     _tpl_story_next.id = 'story_next';
+    _tpl_story_next.setAttribute('title', this._l('story_next'));
     _tpl_story_main.id = 'story_main';
     _tpl_story_image.id = 'story_image';
     _tpl_story_share_container.id = 'story_share_container';
+    _tpl_story_share_container.setAttribute('title', this._l('share_container'));
     _tpl_story_share_container_wrapper.id = 'story_share_container_wrapper';
     _tpl_story_share_container_twitter.id = 'share_twitter';
+    _tpl_story_share_container_twitter.setAttribute('title', this._l('share_container_twitter'));
     _tpl_story_share_container_url.id = 'share_url';
+    _tpl_story_share_container_url.setAttribute('title', this._l('share_container_url'));
     _tpl_story_title.id = 'story_title';
     _tpl_story_title.className = 'noselect';
     _tpl_story_subtitle.id = 'story_subtitle';
@@ -1054,14 +1060,26 @@ Gladstone.prototype._l = function(key) {
             'all_continents': 'Show all continents',
             'map_zoom_in': 'Click to zoom in',
             'map_zoom_out': 'Click to zoom out',
-            'marker_assist': 'Did you get lost? Click here!'
+            'marker_assist': 'Did you get lost? Click here!',
+            'story_close': 'Close story',
+            'story_previous': 'Previous story',
+            'story_next': 'Next story',
+            'share_container': 'See how you can share this article',
+            'share_container_url': 'Share the URL',
+            'share_container_twitter': 'Tweet about it',
         },
 
         'pl': {
             'all_continents': 'Pokaż wszystkie kontynenty',
             'map_zoom_in': 'Kliknij aby przybliżyć',
             'map_zoom_out': 'Kliknij aby oddalić',
-            'marker_assist': 'Nie wiesz dokąd teraz? Kliknij tutaj!'
+            'marker_assist': 'Nie wiesz dokąd teraz? Kliknij tutaj!',
+            'story_close': 'Zamknij artykuł',
+            'story_previous': 'Poprzedni artykuł',
+            'story_next': 'Następny artykuł',
+            'share_container': 'Zobacz jak możesz udostępnić ten artykuł',
+            'share_container_url': 'Udostępnij odnośnik do tej strony',
+            'share_container_twitter': 'Tweetnij o tym',
         }
     };
 
