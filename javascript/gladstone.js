@@ -22,6 +22,7 @@ function Gladstone(key, canvas, markers, options) {
         this.canvas = canvas;
         this.markers = markers;
         this.options = {
+            'lang': 'en',
             'slugs': false,
             'slugsRoot': 'http://gladstone.local/map/',
             'storyAutoOpen': 0
@@ -966,7 +967,7 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_marker_assist.className = 'noselect';
     _tpl_marker_assist_arrow.id = 'arrow';
     _tpl_marker_assist_hand.className = 'hand';
-    _tpl_marker_assist_hand.innerHTML = 'Did you get lost? Click here!';
+    _tpl_marker_assist_hand.innerHTML = this._l('marker_assist');
 
     _tpl_map_controls_continents.id = 'map_continents_controls';
     _tpl_map_controls_continents.className = 'map_controls_group noselect';
@@ -1043,4 +1044,33 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_story_share_container_wrapper.appendChild(_tpl_story_share_container_twitter);
 
     _tpl_story_image.appendChild(_tpl_story_share_container);
+};
+
+Gladstone.prototype._l = function(key) {
+
+    var data = {
+
+        'en': {
+            'all_continents': 'Show all continents',
+            'map_zoom_in': 'Click to zoom in',
+            'map_zoom_out': 'Click to zoom out',
+            'marker_assist': 'Did you get lost? Click here!'
+        },
+
+        'pl': {
+            'all_continents': 'Pokaż wszystkie kontynenty',
+            'map_zoom_in': 'Kliknij aby przybliżyć',
+            'map_zoom_out': 'Kliknij aby oddalić',
+            'marker_assist': 'Nie wiesz dokąd teraz? Kliknij tutaj!'
+        }
+    };
+
+    /**
+     * Validate the language variable and set fallback language if the given is invalid
+     *
+     * @type {string}
+     */
+    this.options.lang = (Object.keys(data).indexOf(this.options.lang) > 0) ? this.options.lang : 'en';
+
+    return data[this.options.lang][key];
 };
