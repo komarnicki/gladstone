@@ -919,6 +919,8 @@ Gladstone.prototype.setMarkup = function () {
         _tpl_map_controls_map_zoom_in = document.createElement('nav'),
         _tpl_map_controls_map_zoom_out = document.createElement('nav'),
         _tpl_marker_assist = document.createElement('aside'),
+        _tpl_marker_assist_arrow = document.createElement('p'),
+        _tpl_marker_assist_hand = document.createElement('p'),
         _tpl_map_controls_continents = document.createElement('aside'),
         _tpl_continent_europe = document.createElement('nav'),
         _tpl_continent_australia = document.createElement('nav'),
@@ -952,14 +954,19 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_map_controls.className = 'map_controls_group';
     _tpl_map_controls_all_continents.id = 'all_continents';
     _tpl_map_controls_all_continents.className = 'continent_handler continent_part';
+    _tpl_map_controls_all_continents.setAttribute('title', this._l('all_continents'));
     _tpl_map_controls_map_zoom_in.id = 'map_zoom_in';
     _tpl_map_controls_map_zoom_in.className = 'zoom_handler';
+    _tpl_map_controls_map_zoom_in.setAttribute('title', this._l('map_zoom_in'));
     _tpl_map_controls_map_zoom_out.id = 'map_zoom_out';
     _tpl_map_controls_map_zoom_out.className = 'zoom_handler';
+    _tpl_map_controls_map_zoom_out.setAttribute('title', this._l('map_zoom_out'));
 
     _tpl_marker_assist.id = 'marker_assist';
     _tpl_marker_assist.className = 'noselect';
-    _tpl_marker_assist.innerHTML = '<p id="arrow"></p><p class="hand">Did you get lost? Click here!</p>';
+    _tpl_marker_assist_arrow.id = 'arrow';
+    _tpl_marker_assist_hand.className = 'hand';
+    _tpl_marker_assist_hand.innerHTML = 'Did you get lost? Click here!';
 
     _tpl_map_controls_continents.id = 'map_continents_controls';
     _tpl_map_controls_continents.className = 'map_controls_group noselect';
@@ -1004,6 +1011,9 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_wrapper.appendChild(_tpl_marker_assist);
     _tpl_wrapper.appendChild(_tpl_map_controls_continents);
     _tpl_wrapper.appendChild(_tpl_story_article);
+
+    _tpl_marker_assist.appendChild(_tpl_marker_assist_arrow);
+    _tpl_marker_assist.appendChild(_tpl_marker_assist_hand);
 
     _tpl_map_controls.appendChild(_tpl_map_controls_all_continents);
     _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_in);
