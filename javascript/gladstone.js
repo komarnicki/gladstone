@@ -163,7 +163,7 @@ Gladstone.prototype.initiate = function () {
         this.setMarkers();
 
     } catch(e) {
-        console.log(e);
+        console.warn(e);
     }
 };
 
@@ -537,7 +537,7 @@ Gladstone.prototype.getMarkerById = function (marker_id) {
         return marker.args.marker_id == marker_id;
     });
 
-    if (m.length === 0) throw 'Requested marker does not exist';
+    if (m.length === 0) throw this._l('gladstone_exception_marker_not_found');
 
     return m;
 };
@@ -722,7 +722,8 @@ Gladstone.prototype.storyOpen = function (marker_id) {
                     window.history.pushState({}, m[0].args.subTitle, this.options.slugsRoot + m[0].args.link);
                     break;
                 case 'file:':
-                    console.log('Dynamic location change cannot work with local files. Host your project via http(s).');
+                default:
+                    console.warn(this._l('gladstone_invalid_protocol_for_slugs'));
                     break;
             }
         }
@@ -767,7 +768,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
             _rand_see_more.id = 'random_see_more';
             _rand_see_more.className = 'hand noselect';
-            _rand_see_more.innerHTML = 'Do you have some spare time? See more below! :)';
+            _rand_see_more.innerHTML = this._l('random_see_more');
 
             _s.content.appendChild(_rand_see_more);
         }
@@ -901,7 +902,7 @@ Gladstone.prototype.storyShare = function (type, marker_id) {
                 link = (this.options.slugs === true ? this.options.slugsRoot + _m[0].args.link : _m[0].args.link),
                 url = 'http://twitter.com/share?text=' + label + ' - ' + subTitle + '…&url=' + link; // Support hashtags
 
-            window.open(url, 'Share it with your friends!', 'width=600, height=240, scrollbars=no');
+            window.open(url, this._l('share_container_twitter_popup_title'), 'width=600, height=240, scrollbars=no');
             break;
     }
 };
@@ -1057,6 +1058,8 @@ Gladstone.prototype._l = function(key) {
     var data = {
 
         'en': {
+            'gladstone_invalid_protocol_for_slugs': 'I see that "slugs" option is enabled. Unfortunately dynamic change of the URL address cannot work when you are using file:// protocol. Run Gladstone via http(s).',
+            'gladstone_exception_marker_not_found': 'Requested marker does not exist',
             'all_continents': 'Show all continents',
             'map_zoom_in': 'Click to zoom in',
             'map_zoom_out': 'Click to zoom out',
@@ -1067,9 +1070,13 @@ Gladstone.prototype._l = function(key) {
             'share_container': 'See how you can share this article',
             'share_container_url': 'Share the URL',
             'share_container_twitter': 'Tweet about it',
+            'share_container_twitter_popup_title': 'Share it with your friends!',
+            'random_see_more': 'Do you have some spare time? See more places below! :)'
         },
 
         'pl': {
+            'gladstone_invalid_protocol_for_slugs': 'Widzę, że opcja "slugs" jest włączona. Niestety dynamiczna zmiana adresu URL w przeglądarce nie może działać kiedy używasz protokołu file://. Uruchom Gladstone poprzez http(s).',
+            'gladstone_exception_marker_not_found': 'Żądany marker nie istnieje',
             'all_continents': 'Pokaż wszystkie kontynenty',
             'map_zoom_in': 'Kliknij aby przybliżyć',
             'map_zoom_out': 'Kliknij aby oddalić',
@@ -1080,6 +1087,8 @@ Gladstone.prototype._l = function(key) {
             'share_container': 'Zobacz jak możesz udostępnić ten artykuł',
             'share_container_url': 'Udostępnij odnośnik do tej strony',
             'share_container_twitter': 'Tweetnij o tym',
+            'share_container_twitter_popup_title': 'Podziel się tym ze swoimi przyjaciółmi!',
+            'random_see_more': 'Masz jeszcze chwilę czasu? Zobacz poniższe miejsca! :)'
         }
     };
 
