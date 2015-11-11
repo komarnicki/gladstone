@@ -24,7 +24,8 @@ function Gladstone(key, canvas, markers, options) {
         this.options = {
             'lang': 'en',
             'slugs': false,
-            'slugsRoot': 'http://gladstone.local/map/',
+            'urlRoot': 'http://gladstone.local/',
+            'urlMap': 'http://gladstone.local/map/',
             'storyAutoOpen': 0
         };
 
@@ -420,7 +421,7 @@ Gladstone.prototype.setMarkers = function () {
             switch(window.location.protocol) {
                 case 'http:':
                 case 'https:':
-                    window.history.pushState({}, '', self.options.slugsRoot);
+                    window.history.pushState({}, '', self.options.urlMap);
                     break;
             }
         }
@@ -719,7 +720,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
             switch(window.location.protocol) {
                 case 'http:':
                 case 'https:':
-                    window.history.pushState({}, m[0].args.subTitle, this.options.slugsRoot + m[0].args.link);
+                    window.history.pushState({}, m[0].args.subTitle, this.options.urlMap + m[0].args.link);
                     break;
                 case 'file:':
                 default:
@@ -884,10 +885,8 @@ Gladstone.prototype.storyNext = function () {
 
 Gladstone.prototype.storyRedirect = function (marker_id) {
 
-    var _m = this.getMarkerById(marker_id),
-        _url = _m[0].args.link;
-
-    window.open(_url, '_blank');
+    var _m = this.getMarkerById(marker_id);
+    window.open(this.options.urlRoot + _m[0].args.link, '_blank');
 };
 
 Gladstone.prototype.storyShare = function (type, marker_id) {
@@ -899,7 +898,7 @@ Gladstone.prototype.storyShare = function (type, marker_id) {
 
             var label = _m[0].args.label,
                 subTitle = _m[0].args.subTitle,
-                link = (this.options.slugs === true ? this.options.slugsRoot + _m[0].args.link : _m[0].args.link),
+                link = (this.options.slugs === true ? this.options.urlMap + _m[0].args.link : _m[0].args.link),
                 url = 'http://twitter.com/share?text=' + label + ' - ' + subTitle + '…&url=' + link; // Support hashtags
 
             window.open(url, this._l('share_container_twitter_popup_title'), 'width=600, height=240, scrollbars=no');
