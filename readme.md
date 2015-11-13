@@ -78,3 +78,12 @@ Repeat this in a loop and your markers are ready to be set on the map.
 ### Live Demo
 
 Curious? Check out how Gladstone works [on my own blog](http://komarnicki.pl/mapa).
+
+### Current Status
+
+Absolutely stable but still considered as an *alpha* version.
+
+### License
+
+Do what you want with Gladstone. Both home and commercial use allowed.
+Only thing I ask is to leave header credits in `Gladstone.js` intact.
