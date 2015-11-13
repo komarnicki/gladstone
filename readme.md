@@ -20,11 +20,11 @@ All have to do, is to prepare a JSON. In most cases that will be a valid JSON st
 and then (probably) passed from the controller into the view layer. That's it! Follow Installation chapter to read detailed
 instructions.
 
-## Requirements
+### Requirements
 
-Absolutely minimal. *Modern* internet browser and internet connection (for Google Maps)
+Absolutely minimal. **Modern** internet browser (not IE 6, not even 10) and internet connection (for Google Maps),
 
-## Installation
+### Installation
 
 1. Include the Gladstone style sheets `./css/gladstone.css` into your application.
 
@@ -34,6 +34,7 @@ Absolutely minimal. *Modern* internet browser and internet connection (for Googl
 
 4. Finally invoke Gladstone with some mandatory parameters
 
+
 ```
 var gladstone,
     key = '',
@@ -42,10 +43,10 @@ var gladstone,
 gladstone = new Gladstone(key, canvas, markers, {
     'lang': 'pl',
     'storyAutoOpen': 1245
-});```
+});
 
-
-**Don't forget to generate your [API key](https://developers.google.com/maps/signup?hl=en)**.
+```
+**Don't forget to generate your [API key](https://developers.google.com/maps/signup?hl=en).**
 
 In terms of the `markers` variable, here is how it should look like
 
@@ -67,12 +68,13 @@ var markers = [
         'label': 'Corfu', 
         'description': '<p>Lobortis leo est et lorem.</p>'
     }
-];```
+];
+```
 
 Repeat this in a loop and your markers are ready to be set on the map.
 
 ![Gladstone all continents](./images/readme/preview_03.png)
 
-## Living demo
+### Live Demo
 
-Check out how Gladstone works [on my own blog](http://komarnicki.pl/mapa).
+Curious? Check out how Gladstone works [on my own blog](http://komarnicki.pl/mapa).
