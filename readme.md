@@ -34,20 +34,20 @@ Absolutely minimal. *Modern* internet browser and internet connection (for Googl
 
 4. Finally invoke Gladstone with some mandatory parameters
 
-```js
+```
 var gladstone,
     key = '',
     canvas = 'map_canvas'
 
 gladstone = new Gladstone(key, canvas, markers, {
-    'lang': 'pl,
+    'lang': 'pl',
     'storyAutoOpen': 1245
 });```
 
 
 **Don't forget to generate your [API key](https://developers.google.com/maps/signup?hl=en)**.
 
-In terms of the `markers` variable, here's how it should look like
+In terms of the `markers` variable, here is how it should look like
 
 ```
 var markers = [
