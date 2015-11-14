@@ -1,8 +1,7 @@
 # What is Gladstone?
+Gladstone is pure vanilla JavaScript application. **No additional frameworks, no jQuery, no heavy dependencies**.
 
-With a very few steps, Gladstone gives you a phenomenal ability to put some custom markers across the globe
-and link them with dedicated stories. Read each of them, enjoy stunning pictures and finally jump from point to point
-to experience great adventure with some unique content.
+With a very few steps, Gladstone gives you a phenomenal ability to put some custom markers across the globe and link them with dedicated stories. Read each of them, enjoy stunning pictures and finally jump from point to point to experience great adventure with some unique content.
 
 ![Gladstone main](./images/readme/preview_01.png)
 
@@ -56,8 +55,7 @@ var markers = [
         'id': 1, 
         'latitude': 39.623791, 
         'longitude': 19.921335, 
-        'continent': 
-        'europe', 
+        'continent': 'europe', 
         'position': '-16° 55.101 S 145° 46.096 E',
         'zoom': 7, 
         'color': 'color_green1', 
@@ -74,6 +72,54 @@ var markers = [
 Repeat this in a loop and your markers are ready to be set on the map.
 
 ![Gladstone all continents](./images/readme/preview_03.png)
+
+#### JSON properties format
+
+* **Integers**
+  * id,
+  * zoom,
+* **Decimals**
+  * latitude
+  * longitude
+* **Strings**
+  * continent,
+  * position,
+  * color,
+  * image,
+  * link,
+  * date,
+  * subTitle,
+  * label,
+  * description (should be rich HTML but don't forget to strip unsafe tags, I preffer to leave `a`, `strong` as well as `p` and strip everything else)
+  
+#### Additional options
+
+You can easily replace default options by defining them puting them explicitly into `options` variable while creating `new Gladstone` object:
+
+* **lang** can be either `en` or `pl`. Everything that localization does it to translate some title attributes as well as some short messages and exceptions if thrown.
+* **slugs** can be either `true` or `false`. If enabled, then it's up to you to replace the value of `links` in the JSON from full URLs to just slugs. Remove protocol and domain and relave the rest. This will enable dynamic URL change when jumping between stories.
+* **urlRoot** is the main URL where all stories associated with your map are hosted. This works perfectly when `slugs` are enabled.
+* **urlMap** is the main URL where Gladstone is located. Should be different than `urlRoot`.
+* **storyAutoOpen** this one is my favourite and should be generated (if needed) by your server side language. If you want to open a particular story once the Gladstone is initialized, put here marker's ID, otherwise set to `0`. This works perfectly with elabled `slugs`. [Check this link](http://komarnicki.pl/mapa/wellington-picton) - it has a slug to existing story. PHP detects this slug and then sets `storyAutoOpen` with associated `id`. Thanks to that, story is automatically opened. Rocket science, isn't it? ;)
+
+#### Predefined colors
+
+To each marker assign one of below predefined class:
+
+* color_red1
+* color_red2
+* color_yellow1
+* color_yellow2
+* color_green1
+* color_green2
+* color_blue1
+* color_blue2
+* color_blue3
+* color_pink1
+* color_violet1
+
+Check `gladstone.css` to see how's everything defined.
+
 
 ### Live Demo
 
