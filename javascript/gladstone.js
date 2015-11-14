@@ -154,6 +154,12 @@ Gladstone.prototype.initiate = function () {
             'content': document.getElementById('story_content_inject')
         };
 
+        this._continent_handlers = {
+            'europe': document.getElementById('europe'),
+            'australia': document.getElementById('australia'),
+            'new_zealand': document.getElementById('new_zealand')
+        };
+
         this.map = new google.maps.Map(this._map.container, this._map.options);
         this.map.setCenter(new google.maps.LatLng(52, 21));
         this.map.setZoom(this._map.options.zoom);
@@ -175,7 +181,8 @@ Gladstone.prototype.initiate = function () {
  */
 Gladstone.prototype.setMarkers = function () {
 
-    function _gcm(continent, latlng, map, args) {
+    function _gcm(instance, continent, latlng, map, args) {
+        this.instance = instance;
         this.continent = continent;
         this.latlng = latlng;
         this.args = args;
@@ -190,6 +197,10 @@ Gladstone.prototype.setMarkers = function () {
             _m = this.div;
 
         if ( ! _m) {
+
+            try {
+                this.instance._continent_handlers[this.continent].classList.remove('continent_handler_hidden');
+            } catch (e) { }
 
             // Marker's wrapper
             _m = this.div = document.createElement('div');
@@ -399,7 +410,7 @@ Gladstone.prototype.setMarkers = function () {
             };
 
         this._markers.custom.push(
-            new _gcm(_continent, _ll, this.map, _args)
+            new _gcm(this, _continent, _ll, this.map, _args)
         );
     }
 
@@ -509,17 +520,17 @@ Gladstone.prototype.wakeUpMarkers = function () {
                 _m = this._markers.dom,
                 _run = function () {
 
-                for (var i = 0; i < _m.length; i++) {
-                    setTimeout(function (_marker_wakeup) {
-                        _marker_wakeup.classList.remove('marker_sleep');
-                    }, Math.floor(Math.random() * 2500), _m[i]);
-                }
+                    for (var i = 0; i < _m.length; i++) {
+                        setTimeout(function (_marker_wakeup) {
+                            _marker_wakeup.classList.remove('marker_sleep');
+                        }, Math.floor(Math.random() * 2500), _m[i]);
+                    }
 
-                if (parseInt(self.options.storyAutoOpen) > 0)
-                    self.storyOpen(self.options.storyAutoOpen);
+                    if (parseInt(self.options.storyAutoOpen) > 0)
+                        self.storyOpen(self.options.storyAutoOpen);
 
-                google.maps.event.removeListener(_l); // You're not a virgin anymore. Kill yourself.
-            };
+                    google.maps.event.removeListener(_l); // You're not a virgin anymore. Kill yourself.
+                };
 
         if (this._markers.dom.length > 0) _run();
 
@@ -972,11 +983,11 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_map_controls_continents.id = 'map_continents_controls';
     _tpl_map_controls_continents.className = 'map_controls_group noselect';
     _tpl_continent_europe.id = 'europe';
-    _tpl_continent_europe.className = 'continent_handler continent_part';
+    _tpl_continent_europe.className = 'continent_handler_hidden continent_handler continent_part';
     _tpl_continent_australia.id = 'australia';
-    _tpl_continent_australia.className = 'continent_handler continent_part';
+    _tpl_continent_australia.className = 'continent_handler_hidden continent_handler continent_part';
     _tpl_continent_new_zealand.id = 'new_zealand';
-    _tpl_continent_new_zealand.className = 'continent_handler continent_part';
+    _tpl_continent_new_zealand.className = 'continent_handler_hidden continent_handler continent_part';
 
     _tpl_story_article.id = 'story_article';
     _tpl_story_header.id = 'story_header';

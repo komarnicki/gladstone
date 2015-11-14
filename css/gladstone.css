@@ -124,6 +124,10 @@ aside#map_continents_controls {
     transform: translate(0,5px);
 }
 
+#map_continents_controls .continent_handler_hidden.continent_part {
+    display: none;
+}
+
 #map_continents_controls .continent_part.active {
     -webkit-transition: none;
     -moz-transition: none;
