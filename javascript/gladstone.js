@@ -26,7 +26,8 @@ function Gladstone(key, canvas, markers, options) {
             'slugs': false,
             'urlRoot': 'http://gladstone.local/',
             'urlMap': 'http://gladstone.local/map/',
-            'storyAutoOpen': 0
+            'storyAutoOpen': 0,
+            'scrollOutside': true
         };
 
         this.options = this.mergeOptions(this.options, options);
@@ -141,6 +142,8 @@ Gladstone.prototype.initiate = function () {
 
         this._story = {
             'article': document.getElementById('story_article'),
+            'header': document.getElementById('story_header'),
+            'main': document.getElementById('story_main'),
             'close': document.getElementById('story_close'),
             'previous': document.getElementById('story_previous'),
             'next': document.getElementById('story_next'),
@@ -687,6 +690,11 @@ Gladstone.prototype.storyOpen = function (marker_id) {
             this._story.next.style.display = 'none';
         }
 
+        if (this.options.scrollOutside) {
+            this._story.header.style.width = 'calc(100% - 17px)';
+            this._story.main.style.width = 'calc(100% - 17px)';
+        }
+
         var _s = this._story,
             _img = new Image(),
             _show_image_tiles = function () {
@@ -756,8 +764,14 @@ Gladstone.prototype.storyOpen = function (marker_id) {
                 _d_height = ((_n_height * _d_width) / _n_width);
 
             _s.image.style.backgroundImage = 'url(' + m[0].args.image + ')';
-            _s.image.style.width = _d_width + 'px';
-            _s.image.style.height = _d_height + 'px';
+
+            if (self.options.scrollOutside) {
+                _s.image.style.width = _d_width - 17 + 'px';
+                _s.image.style.height = _d_height - 17 + 'px';
+            } else {
+                _s.image.style.width = _d_width + 'px';
+                _s.image.style.height = _d_height + 'px';
+            }
         };
 
         _img.src = m[0].args.image;
@@ -768,7 +782,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
         _s.content.innerHTML = m[0].args.description;
 
         var _rand = document.getElementById('random'),
-            _rand_w = _s.article.offsetWidth,
+            _rand_w = (this.options.scrollOutside) ? _s.article.offsetWidth - 17 : _s.article.offsetWidth,
             _t_dim = _rand_w / 3;
 
         _rand.style.width = _rand_w + 'px';

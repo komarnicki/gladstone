@@ -426,7 +426,6 @@ aside#map_continents_controls {
     display: block;
     height: inherit;
     width: auto;
-    position: relative;
 }
 
 #random .random_story_tile_image > div > .location {
