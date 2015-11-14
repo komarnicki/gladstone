@@ -720,7 +720,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
             switch(window.location.protocol) {
                 case 'http:':
                 case 'https:':
-                    window.history.pushState({}, m[0].args.subTitle, this.options.urlMap + m[0].args.link);
+                    window.history.pushState({}, m[0].args.subTitle, this.options.urlMap + m[0].args.link + '/');
                     break;
                 case 'file:':
                 default:
