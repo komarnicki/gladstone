@@ -151,14 +151,22 @@ aside#map_continents_controls {
     transform: translate(0,5px);
 }
 
-#story_article {
-    top: 0;
+#story_article_wrapper {
+    position: absolute;
+    width: 50%;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-    position: absolute;
+}
+
+#story_article {
+    top: 0;
+    height: 100%;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
     z-index: 2000;
-    width: 50%;
+    width: calc(100% - 10px);
     -webkit-transition: 0.55s ease;
     -moz-transition: 0.55s ease;
     -o-transition: 0.55s ease;
@@ -258,7 +266,7 @@ aside#map_continents_controls {
     background-size: cover;
     background-color: inherit;
     position: relative;
-    width: inherit;
+    width: inherit !important;
     height: 0;
     z-index: 2000;
     overflow: hidden;
