@@ -113,10 +113,10 @@ aside#map_continents_controls {
     background-size: 60px 60px;
     background-repeat: no-repeat;
     position: relative;
-    -webkit-transition: 0.55s linear;
-    -moz-transition: 0.55s linear;
-    -o-transition: 0.55s linear;
-    transition: 0.55s linear;
+    -webkit-transition: 0.15s linear;
+    -moz-transition: 0.15s linear;
+    -o-transition: 0.15s linear;
+    transition: 0.15s linear;
     -webkit-transform: translate(0,5px);
     -moz-transform: translate(0,5px);
     -o-transform: translate(0,5px);
@@ -376,16 +376,19 @@ aside#map_continents_controls {
     padding-bottom: 60px;
 }
 
-#random_see_more {
+#random_see_more_wrapper {
+    width: 33.3333%;
     position: absolute;
-    width: 33.333%;
-    right: 50px;
-    bottom: -20px;
-    color: #ffffff;
+    bottom: -1%;
+    right: 10%;
     z-index: 10000;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+#random_see_more {
     -moz-transform: rotate(-11deg);
     -o-transform: rotate(-11deg);
-    -webkit-transform: rotate(-11deg);
+    -webkit-transform: rotate(-11deg) translate3d(0,0,0);
     transform: rotate(-11deg);
 }
 
@@ -425,7 +428,7 @@ aside#map_continents_controls {
     background-size: cover;
     display: block;
     height: inherit;
-    width: auto;
+    width: inherit;
 }
 
 #random .random_story_tile_image > div > .location {
@@ -440,10 +443,10 @@ aside#map_continents_controls {
     text-align: right;
     font-weight: 400;
     font-size: 13px;
-    -webkit-transition: 0.55s linear;
-    -moz-transition: 0.55s linear;
-    -o-transition: 0.55s linear;
-    transition: 0.55s linear;
+    -webkit-transition: 0.15s linear;
+    -moz-transition: 0.15s linear;
+    -o-transition: 0.15s linear;
+    transition: 0.15s linear;
     -webkit-transform: translate(0,0);
     -moz-transform: translate(0,0);
     -o-transform: translate(0,0);
@@ -459,16 +462,40 @@ aside#map_continents_controls {
     transform: translate(0,-3px);
 }
 
+#random .random_story_tile_content::after {
+    display: block;
+    content: " ";
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    -webkit-filter: blur(10px);
+    -moz-filter: blur(10px);
+    -o-filter: blur(10px);
+    -ms-filter: blur(10px);
+    filter: blur(10px);
+    background-color: inherit;
+}
+
 #random .random_story_tile_content > .title {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 400;
-    line-height: 32px;
-    margin: 0;
+    line-height: 34px;
+    margin: 0 0 12px 0;
+    max-height: 64px;
+    overflow: hidden;
 }
 
 #random .random_story_tile_content > .content {
-    margin-top: 20px;
-    line-height: 24px;
+    margin: 0;
+    line-height: 26px;
+    font-size: 14px;
+}
+
+#random .random_story_tile_content > .content p {
+    margin: 0;
+    padding: 0;
 }
 
 .marker {

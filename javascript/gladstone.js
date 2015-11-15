@@ -27,6 +27,7 @@ function Gladstone(key, canvas, markers, options) {
             'urlRoot': 'http://gladstone.local/',
             'urlMap': 'http://gladstone.local/map/',
             'storyAutoOpen': 0,
+            'storyRandomTilesLimit': 21,
             'scrollOutside': true
         };
 
@@ -790,21 +791,24 @@ Gladstone.prototype.storyOpen = function (marker_id) {
 
         if (this._markers.custom.length - 1 > 0) {
 
-            var _rand_see_more = document.createElement('aside');
+            var _rand_see_more_wrapper = document.createElement('div'),
+                _rand_see_more = document.createElement('aside');
+
+            _rand_see_more_wrapper.id = 'random_see_more_wrapper';
 
             _rand_see_more.id = 'random_see_more';
             _rand_see_more.className = 'hand noselect';
             _rand_see_more.innerHTML = this._l('random_see_more');
 
-            _s.content.appendChild(_rand_see_more);
+            _s.content.appendChild(_rand_see_more_wrapper);
+            _rand_see_more_wrapper.appendChild(_rand_see_more);
         }
 
-        var _custom_markers_shuffled = _shuffle(this._markers.custom),
-            _limit = 6;
+        var _custom_markers_shuffled = _shuffle(this._markers.custom);
 
         for (var i = 0; i < _custom_markers_shuffled.length; i++) {
 
-            if (i + 1 > _limit) break;
+            if (this.options.storyRandomTilesLimit !== false && i + 1 > this.options.storyRandomTilesLimit) break;
 
             var _m = _custom_markers_shuffled[i];
 
@@ -839,7 +843,7 @@ Gladstone.prototype.storyOpen = function (marker_id) {
             _tc.appendChild(_tc_h);
 
             _tc_c.className = 'content';
-            _tc_c.innerHTML = _m.args.description.substring(0, 100) + '…';
+            _tc_c.innerHTML = _m.args.description.substring(0, 200) + '…';
             _tc.appendChild(_tc_c);
 
             _rand.appendChild(_ti);
