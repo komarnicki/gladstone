@@ -159,6 +159,7 @@ Gladstone.prototype.initiate = function () {
 
         this._continent_handlers = {
             'europe': document.getElementById('europe'),
+            'southeast_asia': document.getElementById('southeast_asia'),
             'australia': document.getElementById('australia'),
             'new_zealand': document.getElementById('new_zealand')
         };
@@ -941,6 +942,7 @@ Gladstone.prototype.setMarkup = function () {
         _tpl_marker_assist_hand = document.createElement('p'),
         _tpl_map_controls_continents = document.createElement('aside'),
         _tpl_continent_europe = document.createElement('nav'),
+        _tpl_continent_southeast_asia = document.createElement('nav'),
         _tpl_continent_australia = document.createElement('nav'),
         _tpl_continent_new_zealand = document.createElement('nav'),
         _tpl_story_article_wrapper = document.createElement('div'),
@@ -991,6 +993,8 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_map_controls_continents.className = 'map_controls_group noselect';
     _tpl_continent_europe.id = 'europe';
     _tpl_continent_europe.className = 'continent_handler_hidden continent_handler continent_part';
+    _tpl_continent_southeast_asia.id = 'southeast_asia';
+    _tpl_continent_southeast_asia.className = 'continent_handler_hidden continent_handler continent_part';
     _tpl_continent_australia.id = 'australia';
     _tpl_continent_australia.className = 'continent_handler_hidden continent_handler continent_part';
     _tpl_continent_new_zealand.id = 'new_zealand';
@@ -1046,6 +1050,7 @@ Gladstone.prototype.setMarkup = function () {
     _tpl_map_controls.appendChild(_tpl_map_controls_map_zoom_out);
 
     _tpl_map_controls_continents.appendChild(_tpl_continent_europe);
+    _tpl_map_controls_continents.appendChild(_tpl_continent_southeast_asia);
     _tpl_map_controls_continents.appendChild(_tpl_continent_australia);
     _tpl_map_controls_continents.appendChild(_tpl_continent_new_zealand);
 
