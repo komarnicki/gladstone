@@ -27,7 +27,7 @@ function Gladstone(key, canvas, markers, options) {
             'urlRoot': 'http://gladstone.local/',
             'urlMap': 'http://gladstone.local/map/',
             'storyAutoOpen': 0,
-            'storyRandomTilesLimit': 21
+            'storyRandomTilesLimit': 6
         };
 
         this.options = this.mergeOptions(this.options, options);
